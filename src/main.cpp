@@ -66,7 +66,7 @@ int main(int argc, const char * argv[]) {
 
     World world;
 
-    world.generate(32, 32);
+    world.generate(64, 64);
 
     Texture worldText = world.generateWorldTexture();
 

@@ -135,7 +135,11 @@ void Window::scroll_callback(GLFWwindow *p_window, double xoffset, double yoffse
 //    if (window->camera.fov > 45.0f)
 //        window->camera.fov = 45.0f;
 
-    window->camera.zoom(-yoffset * 200);
+    std::cout << yoffset << std::endl;
+
+    float currentZoom = window->camera.zoom;
+//
+    window->camera.zoom += (yoffset / std::abs(yoffset))* 0.005f;
 
     //window->camera.updateProjection();
 }

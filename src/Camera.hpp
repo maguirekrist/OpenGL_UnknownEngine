@@ -21,6 +21,8 @@ public:
     glm::mat4 view;
     glm::mat4 projection;
 
+    float zoom = 1/32.0f;
+
     float fov;
     float yaw = -90.0f;
     float pitch = 0.0f;
@@ -38,8 +40,7 @@ public:
     
     void updateCamView();
     void updateProjection(int width, int height);
-    void circleAround(float time);
-    void zoom(int amount);
+
 private:
     glm::vec3 cameraTarget;
     glm::vec3 up;

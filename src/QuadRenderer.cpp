@@ -18,13 +18,13 @@ void QuadRenderer::initRenderData() {
     unsigned int VBO;
     float vertices[] = {
             // pos      // tex
-            -1.0f, -1.0f, 0.0f, 0.0f, //Bottom Left
-            -1.0f, 1.0f, 0.0f, 1.0f, //Top Left
-            1.0f, -1.0f, 1.0f, 0.0f, //Bottom Right
+            -1.0f, -1.0f,  //Bottom Left
+            -1.0f, 1.0f,  //Top Left
+            1.0f, -1.0f,  //Bottom Right
 
-            1.0f, 1.0f, 1.0f, 1.0f, //Top Right
-            -1.0f, 1.0f, 0.0f, 1.0f,  //Top Left
-            1.0f, -1.0f, 1.0f, 0.0f, //Bottom right
+            1.0f, 1.0f,  //Top Right
+            -1.0f, 1.0f,   //Top Left
+            1.0f, -1.0f,  //Bottom right
     };
 
     glGenVertexArrays(1, &this->quadVAO);
@@ -36,7 +36,7 @@ void QuadRenderer::initRenderData() {
     glBindVertexArray(this->quadVAO);
 
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *) 0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *) 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -46,16 +46,14 @@ void QuadRenderer::drawQuad(Texture &texture, Texture& atlas, Camera& camera, Wi
     this->shader.use();
 
 
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0, 0, 0.0f));
-    model = glm::scale(model, glm::vec3(window.width, window.height, 0.f));
+    glm::mat4 world = glm::mat4(1.0f);
+    world = glm::translate(world, camera.cameraPos);
+    world = glm::scale(world, glm::vec3(camera.zoom, camera.zoom, 1.0f));
 
-    this->shader.setMat4("model", model);
-    this->shader.setMat4("view", camera.view);
-    this->shader.setMat4("projection", camera.projection);
+
+    this->shader.setMat4("view", world);
     this->shader.setInt("aTexture", 0);
     this->shader.setInt("atlas", 1);
-
 
     glActiveTexture(GL_TEXTURE0);
     texture.bind();
