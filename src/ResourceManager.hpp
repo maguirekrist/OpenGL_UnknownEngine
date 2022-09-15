@@ -6,15 +6,18 @@
 class ResourceManager
 {
 public:
-	static ShaderProgram& getShader(std::string name);
+
+	static Shader& getShader(std::string name);
 	static Texture& getTexture(std::string name);
 	
-	static void storeShader(ShaderProgram& shader, std::string name);
-	static void storeTexture(Texture& texture, std::string name);
+	static void loadShader(const char* vShaderFile, const char* fShaderFile, const char* gShaderFile, std::string name);
+	static void loadTexture(const char* file, bool alpha, std::string name);
 
+    static void clear();
 private:
+    //Resource storage
 	static std::map<std::string, Texture> textures;
-	static std::map<std::string, ShaderProgram> shaders;
+	static std::map<std::string, Shader> shaders;
 
 	ResourceManager() {}
 

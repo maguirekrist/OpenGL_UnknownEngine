@@ -25,13 +25,11 @@ public:
     int height;
     int width;
     
-    std::vector<Cube>* cubes;
-    
-    Cube* Raycast(glm::vec3 ray);
+    //Cube* Raycast(glm::vec3 ray);
     void processInput();
     void update();
     bool isOpen();
-    void loadSceneItems(std::vector<Cube>& cubes);
+    //void loadSceneItems(std::vector<Cube>& cubes);
     
 private:
     GLFWwindow* glfwWindow;
@@ -41,7 +39,7 @@ private:
     static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
     static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
     static void mouse_callback(GLFWwindow* window, double xPos, double yPos);
-
+    static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 };
 
 #endif /* Window_hpp */

@@ -6,14 +6,15 @@
 class CubeRenderer
 {
 public:
-    CubeRenderer();
+    CubeRenderer(Shader &shader);
     ~CubeRenderer();
     
-    void Render(Cube& cube, ShaderProgram& objectsShader, Camera& camera);
+    void Render(Cube& cube, Camera& camera);
 
 private:
+    Shader shader;
+
     inline static unsigned int VAO;
-    inline static unsigned int VBO;
 
     const std::array<Vertex, 36> vertices = {
         //min

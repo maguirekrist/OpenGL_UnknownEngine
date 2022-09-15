@@ -18,22 +18,23 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-class ShaderProgram {
+class Shader {
 public:
-    ShaderProgram(const char * vertexPath, const char * fragmentPath);
-    ~ShaderProgram();
+    unsigned int ID;
+    Shader() {}
     
     void setMat4(const char * name, glm::mat4 mat4);
+    void setVec2(const char * name, glm::vec2 vec2);
     void setVec3(const char * name, glm::vec3 vec3);
     void setVec4(const char * name, glm::vec4 vec4);
     void setInt(const char * name, int value);
-    
-    void use();
+
+    void compile(const char* vertexSource, const char* fragmentSource, const char* geometrySource = nullptr);
+
+    Shader& use();
 private:
-    unsigned int shaderProgram;
-    unsigned int compileVertexShader(const char *shaderSource);
-    unsigned int compileFragmentShader(const char *shaderSource);
-    
+    unsigned int compileVertexShader(const char* vertexSource);
+    unsigned int compileFragmentShader(const char* fragmentSource);
 };
 
 

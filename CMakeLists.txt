@@ -18,7 +18,7 @@ file(GLOB SOURCES
         )
 
 
-add_executable(AlphaEngineCMake ${SOURCES})
+add_executable(AlphaEngineCMake ${SOURCES} src/SpriteRenderer.cpp src/SpriteRenderer.h src/Tile.cpp src/Tile.h src/World.cpp src/World.h src/WorldRenderer.cpp src/WorldRenderer.h src/QuadRenderer.cpp src/QuadRenderer.h)
 target_include_directories(AlphaEngineCMake PRIVATE ${STB_INCLUDE_DIRS})
 target_link_libraries(AlphaEngineCMake PRIVATE OpenGL::GL)
 target_link_libraries(AlphaEngineCMake PRIVATE glm::glm)

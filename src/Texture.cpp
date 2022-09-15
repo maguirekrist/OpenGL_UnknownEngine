@@ -1,37 +1,50 @@
+#include <array>
+#include <cstring>
+#include <vector>
 #include "Texture.hpp"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
-
-Texture::Texture(const char * path)
+#define ASSERT(x) if (!(x)) __debugbreak();
+#define GLCall(x) glClearError(); \
+    x;                            \
+    ASSERT(glLogCall())
+static void glClearError()
 {
-    glGenTextures(1, &ID);
-    glBindTexture(GL_TEXTURE_2D, ID);
+    while(glGetError() != GL_NO_ERROR);
+}
+
+static bool glLogCall()
+{
+    while(GLenum error = glGetError())
+    {
+        std::cout << "[OpenGL ERROR]: " << error << std::endl;
+        return false;
+    }
+    return true;
+}
+
+Texture::Texture() : internal_format(GL_RGB), image_format(GL_RGB)
+{
+    glGenTextures(1, &this->ID);
+}
+
+void Texture::generate(unsigned int width, unsigned int height, unsigned char *data) {
+    this->width = width;
+    this->height = height;
+
+    glBindTexture(GL_TEXTURE_2D, this->ID);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); //GL_NEAREST is good for pixel graphics
 
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char* data = stbi_load(path, &width, &height, &nrChannels, 0);
-    if (data) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    stbi_image_free(data);
+    GLCall(glTexImage2D(GL_TEXTURE_2D, 0, this->internal_format, width, height, 0, this->image_format, GL_UNSIGNED_BYTE, data));
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
 }
 
-Texture::~Texture()
+void Texture::bind() const
 {
-    glDeleteTextures(1, &ID);
-}
-
-void Texture::Bind() const
-{
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, ID);
+    glBindTexture(GL_TEXTURE_2D, this->ID);
 }

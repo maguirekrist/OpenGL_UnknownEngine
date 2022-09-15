@@ -8,16 +8,20 @@
 class Texture
 {
 public:
-	Texture(const char * path);
-	~Texture();
+	Texture();
 	
 	unsigned int ID;
+
+    unsigned int internal_format; // format of texture object
+    unsigned int image_format; // format of loaded image
 
 	int height;
 	int width;
 	int nrChannels;
 
+    void generate(unsigned int width, unsigned int height, unsigned char* data);
+
 	//const member function cannot change member variables without compile errors
-	void Bind() const;
+	void bind() const;
 };
 

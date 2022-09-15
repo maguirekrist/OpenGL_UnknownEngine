@@ -5,6 +5,7 @@ Cube::Cube(glm::vec3 position, Texture& texture) : texture(texture)
     this->position = position;
     this->model = glm::translate(glm::mat4(1.0f), position);
     this->color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
     glm::vec4 boxMin(-0.5f, -0.5f, -0.5f, 1.0f);
     glm::vec4 boxMax(0.5f, 0.5f, 0.5f, 1.0f);
 

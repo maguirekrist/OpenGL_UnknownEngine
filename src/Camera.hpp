@@ -20,23 +20,26 @@ public:
     
     glm::mat4 view;
     glm::mat4 projection;
-        
+
+    float fov;
     float yaw = -90.0f;
     float pitch = 0.0f;
-    float lastX = 400;
-    float lastY = 300;
     
     Camera(glm::vec3 defaultPos);
-    
+
+
     void moveForward();
     void moveBackward();
+    void moveUp();
+    void moveDown();
     void moveLeft();
     void moveRight();
     void updateCamSpeed(float dt);
     
     void updateCamView();
+    void updateProjection(int width, int height);
     void circleAround(float time);
-    
+    void zoom(int amount);
 private:
     glm::vec3 cameraTarget;
     glm::vec3 up;
