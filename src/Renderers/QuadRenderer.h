@@ -21,7 +21,7 @@ public:
 
     void initRenderData();
 
-    void drawQuad(Texture& texture, Texture& atlas, Camera& camera, Window& window);
+    void drawQuad(Texture& texture, Texture& atlas, Camera& camera);
 };
 
 

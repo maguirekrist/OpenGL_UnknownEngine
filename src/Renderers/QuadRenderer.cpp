@@ -42,13 +42,12 @@ void QuadRenderer::initRenderData() {
     glBindVertexArray(0);
 }
 
-void QuadRenderer::drawQuad(Texture &texture, Texture& atlas, Camera& camera, Window& window) {
+void QuadRenderer::drawQuad(Texture &texture, Texture& atlas, Camera& camera) {
     this->shader.use();
-
 
     glm::mat4 world = glm::mat4(1.0f);
     world = glm::translate(world, camera.cameraPos);
-    world = glm::scale(world, glm::vec3(camera.zoom, camera.zoom, 1.0f));
+    world = glm::scale(world, glm::vec3(camera.zoom,  camera.zoom, 1.0f));
 
 
     this->shader.setMat4("view", world);

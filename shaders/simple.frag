@@ -33,8 +33,8 @@ void main()
     float atlasOffsetX = tile.z * 255;
     float atlasOffsetY = tile.w * 255;
 
-    vec2 tileCoord = vec2( (((tile.z * 255) * tileSize) / atlasSize.x),
-                           (((tile.w * 255) * tileSize)) / atlasSize.y);
+    vec2 tileCoord = vec2( ((atlasOffsetX * tileSize) / atlasSize.x),
+                           ((atlasOffsetY * tileSize) / atlasSize.y));
 
     //Translate tileCoord by inTilePosition
     tileCoord = tileCoord + inTilePosition;

@@ -17,36 +17,22 @@
 #include "Shader.hpp"
 #include "Types.hpp"
 #include "Cube.hpp"
-#include "CubeRenderer.hpp"
+#include "Renderers/CubeRenderer.hpp"
 #include "Window.hpp"
 #include "ResourceManager.hpp"
-#include "SpriteRenderer.h"
+#include "Renderers/SpriteRenderer.h"
 #include "World.h"
-#include "WorldRenderer.h"
-#include "QuadRenderer.h"
+#include "Renderers/WorldRenderer.h"
+#include "Renderers/QuadRenderer.h"
 
-static Texture generateRandomTestTexture(int width, int height)
-{
-    srand(time(NULL));
-    std::vector<std::uint8_t> stuff;
-    for(int i = 0; i < height; i++) {
-        for(int j = 0; j < width; j++) {
-            stuff.push_back((rand() % 255));
-            stuff.push_back((rand() % 255));
-            stuff.push_back((rand() % 255));
-            stuff.push_back(0xff);
-        }
-    }
-    Texture text;
-    text.generate(width, height, stuff.data());
-    return text;
-}
+const int WINDOW_HEIGHT = 1024;
+const int WINDOW_WIDTH = 1024;
 
 int main(int argc, const char * argv[]) {
     // insert code here...s
 
-    Camera camera(glm::vec3(0.0f, 0.0f, -1.0f));
-    Window window(camera);
+    Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), WINDOW_WIDTH, WINDOW_HEIGHT);
+    Window window(camera, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     //Load resources
     ResourceManager::loadShader("../shaders/colors.vert", "../shaders/colors.frag", nullptr, "cube");
@@ -57,7 +43,7 @@ int main(int argc, const char * argv[]) {
     ResourceManager::loadTexture("../resources/tilemap_packed.png", true, "container");
 
 
-    //Initialize renderers
+    //Initialize Renderers
     SpriteRenderer* spriteRenderer = new SpriteRenderer(ResourceManager::getShader("sprite"));
     WorldRenderer* worldRenderer = new WorldRenderer(ResourceManager::getShader("world"));
 
@@ -66,11 +52,9 @@ int main(int argc, const char * argv[]) {
 
     World world;
 
-    world.generate(64, 64);
+    world.generate(256, 256);
 
     Texture worldText = world.generateWorldTexture();
-
-    std::cout << worldText.width << std::endl;
 
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
     std::cout << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
@@ -82,10 +66,10 @@ int main(int argc, const char * argv[]) {
     {
         window.processInput();
         
-        glClearColor(0.4f, 0.1f, 0.1f, 1.0f);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        testRenderer->drawQuad(worldText, ResourceManager::getTexture("container"), camera, window);
+        testRenderer->drawQuad(worldText, ResourceManager::getTexture("container"), camera);
 
         window.update();
 
@@ -96,7 +80,7 @@ int main(int argc, const char * argv[]) {
         
         camera.updateCamSpeed(deltaTime);
         camera.updateCamView();
-        
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 

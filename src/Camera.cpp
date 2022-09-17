@@ -7,15 +7,16 @@
 
 #include "Camera.hpp"
 
-Camera::Camera(glm::vec3 defaultPos) {
+Camera::Camera(glm::vec3 defaultPos, int width, int height) {
     cameraPos = defaultPos;
     cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
     cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-    fov = 45.0f;
+    //view = glm::lookAt(cameraPos, glm::vec3(0, 0, 0), cameraUp);
+    //projection = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f); //we may use projection later on, so keep this in mind
 
-    view = glm::lookAt(cameraPos, glm::vec3(0, 0, 0), cameraUp);
-    //projection = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f);
-    projection = glm::ortho(0.0f, 512.0f, 0.0f, 512.0f, -1.0f, 1.0f);
+    view = glm::mat4(1.0f);
+
+    //projection = glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height), -1.0f, 1.0f);
 }
 
 void Camera::moveForward() {
@@ -43,11 +44,15 @@ void Camera::moveRight() {
 }
 
 void Camera::updateCamView() {
-    view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+    //view = glm::translate(this->view, this->cameraPos);
 }
 
 void Camera::updateProjection(int width, int height) {
-    projection = glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height), -1.0f, 1.0f);
+    //projection = glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height), -1.0f, 1.0f);
+}
+
+void Camera::updateCursorPos(int x, int y) {
+    cursorPos = glm::vec2(x, y);
 }
 
 //void Camera::circleAround(float time) {

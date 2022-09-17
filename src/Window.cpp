@@ -7,7 +7,7 @@
 
 #include "Window.hpp"
 
-Window::Window(Camera& camera) : camera(camera)
+Window::Window(Camera& camera, int height, int width) : camera(camera), height(height), width(width)
 {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -15,15 +15,30 @@ Window::Window(Camera& camera) : camera(camera)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    glfwWindow = glfwCreateWindow(512, 512, "LearnOpenGL", NULL, NULL);
-    glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+
+    glfwWindow = glfwCreateWindow(width, height, "LearnOpenGL", NULL, NULL);
+    glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR); //This disables the cursor, which for our engine, we want to enable it by default
+
+    //Initialize custom cursor
+    unsigned char pixels[8 * 8 * 4];
+    memset(pixels, 0xff, sizeof(pixels));
+
+    GLFWimage image;
+    image.width = 8;
+    image.height = 8;
+    image.pixels = pixels;
+
+    GLFWcursor* cursor = glfwCreateCursor(&image, 0, 0);
+
+    glfwSetCursor(glfwWindow, cursor);
 
     glfwSetWindowUserPointer(glfwWindow, reinterpret_cast<void *>(this));
 
     glfwSetFramebufferSizeCallback(glfwWindow, framebuffer_size_callback);
     glfwSetMouseButtonCallback(glfwWindow, mouse_button_callback);
     glfwSetScrollCallback(glfwWindow, scroll_callback);
-    //glfwSetCursorPosCallback(glfwWindow, mouse_callback);
+    glfwSetCursorPosCallback(glfwWindow, mouse_callback);
 
     if (glfwWindow == NULL)
     {
@@ -37,14 +52,9 @@ Window::Window(Camera& camera) : camera(camera)
     glewExperimental = GL_TRUE;
     glewInit();
 
-    glViewport(0, 0, 800, 600);
+    glViewport(0, 0, width, height);
     glEnable(GL_DEPTH_TEST);
 }
-
-//void Window::loadSceneItems(std::vector<Cube>& cubes)
-//{
-//    this->cubes = &cubes;
-//}
 
 Window::~Window()
 {
@@ -109,75 +119,76 @@ void Window::processInput()
 void Window::mouse_button_callback(GLFWwindow* p_window, int button, int action, int mods) {
     Window* window = reinterpret_cast<Window*>(glfwGetWindowUserPointer(p_window));
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-//        double xpos, ypos;
-//        int width, height;
-//
-//        glfwGetCursorPos(window->glfwWindow, &xpos, &ypos);
-//        glfwGetWindowSize(window->glfwWindow, &width, &height);
-//
-//        float y = height - ypos;
-//        std::cout << y << " vs. " << ypos << std::endl;
-//        glm::vec3 v0 = glm::unProject(glm::vec3(xpos, y, 0.0f), window->camera.view, window->camera.projection, glm::vec4(0, 0, 800, 600));
-//        glm::vec3 v1 = glm::unProject(glm::vec3(xpos, y, 1.0f), window->camera.view, window->camera.projection, glm::vec4(0, 0, 800, 600));
-//
-//        glm::vec3 dir = glm::normalize((v1 - v0));
-//
-//        Cube* result = window->Raycast(dir);
+        double xpos, ypos;
+        int width, height;
+
+        glfwGetCursorPos(window->glfwWindow, &xpos, &ypos);
+        glfwGetWindowSize(window->glfwWindow, &width, &height);
+
+        float y = height - ypos;
+
+        glm::vec3 v0 = glm::unProject(glm::vec3(xpos, y, 0.0f), window->camera.view, window->camera.projection, glm::vec4(0, 0, 800, 600));
+        glm::vec3 v1 = glm::unProject(glm::vec3(xpos, y, 1.0f), window->camera.view, window->camera.projection, glm::vec4(0, 0, 800, 600));
+
+        glm::vec3 dir = glm::normalize((v1 - v0));
+
+        std::cout << "CamPos: " << window->camera.cameraPos.x << " & " << window->camera.cameraPos.y << std::endl;
+        //RayCast
+        //Cube* result = window->Raycast(dir);
     }
 }
 
+static glm::vec2 computeCenter(Window* window) {
+    float centerX, centerY;
+    centerX = (window->width / 2 ) * window->camera.zoom;
+    centerY = (window->height / 2 ) * window->camera.zoom;
+
+    glm::vec2 camCenter = glm::vec2(window->camera.cameraPos.x + centerX, window->camera.cameraPos.y + centerY);
+}
 
 void Window::scroll_callback(GLFWwindow *p_window, double xoffset, double yoffset) {
     Window* window = reinterpret_cast<Window*>(glfwGetWindowUserPointer(p_window));
-//    window->camera.fov -= (float)yoffset;
-//    if (window->camera.fov < 1.0f)
-//        window->camera.fov = 1.0f;
-//    if (window->camera.fov > 45.0f)
-//        window->camera.fov = 45.0f;
+    //double cursorX, cursorY;
+    //glfwGetCursorPos(window->glfwWindow, &cursorX, &cursorY);
+    //window->camera.updateCursorPos(static_cast<int>(cursorX), static_cast<int>(cursorY));
 
-    std::cout << yoffset << std::endl;
+    float centerX, centerY;
+    centerX = (window->width / 2 ) * window->camera.zoom;
+    centerY = (window->height / 2 ) * window->camera.zoom;
 
-    float currentZoom = window->camera.zoom;
-//
+    // std::cout << "CamPos: " << window->camera.cameraPos.x << " & " << window->camera.cameraPos.y << std::endl;
+
+    glm::vec2 camCenter = glm::vec2(window->camera.cameraPos.x + centerX, window->camera.cameraPos.y + centerY);
+
     window->camera.zoom += (yoffset / std::abs(yoffset))* 0.005f;
 
-    //window->camera.updateProjection();
+    centerX = (window->width / 2 ) * window->camera.zoom;
+    centerY = (window->height / 2 ) * window->camera.zoom;
+
+   // std::cout << "CamPos: " << window->camera.cameraPos.x << " & " << window->camera.cameraPos.y << std::endl;
+
+    glm::vec2 camCenterAfter = glm::vec2(window->camera.cameraPos.x + centerX, window->camera.cameraPos.y + centerY);
+
+    glm::vec2 diff = camCenter - camCenterAfter;
+
+    window->camera.cameraPos += glm::vec3(diff, 0.0f);
+
+    //std::cout << "CamCenter: " << camCenter.x << " & " << camCenter.y << std::endl;
+}
+
+void Window::cursor_enter_callback(GLFWwindow *window, int entered) {
+    if(entered) {
+
+    } else {
+
+    }
 }
 
 void Window::mouse_callback(GLFWwindow* p_window, double xPos, double yPos) {
     Window* window = reinterpret_cast<Window*>(glfwGetWindowUserPointer(p_window));
-//    if (window->isFirstMouse)
-//    {
-//        window->camera.lastX = xPos;
-//        window->camera.lastY = yPos;
-//        window->isFirstMouse = false;
-//    }
-//
-//    float xoffset = xPos - window->camera.lastX;
-//    float yoffset = window->camera.lastY - yPos;
-//    window->camera.lastX = xPos;
-//    window->camera.lastY = yPos;
-//
-//    const float sensitivity = 0.1f;
-//    xoffset *= sensitivity;
-//    yoffset *= sensitivity;
-//
-//    window->camera.yaw += xoffset;
-//    window->camera.pitch += yoffset;
-//
-//    //Clamp pitch
-//    if (window->camera.pitch > 89.0f) {
-//        window->camera.pitch = 89.0f;
-//    }
-//    if (window->camera.pitch < -89.0f) {
-//        window->camera.pitch = -89.0f;
-//    }
-//
-//    glm::vec3 direction;
-//    direction.x = cos(glm::radians(window->camera.yaw)) * cos(glm::radians(window->camera.pitch));
-//    direction.y = sin(glm::radians(window->camera.pitch));
-//    direction.z = sin(glm::radians(window->camera.yaw)) * cos(glm::radians(window->camera.pitch));
-//    window->camera.cameraFront = glm::normalize(direction);
+    int width, height;
+    glfwGetWindowSize(window->glfwWindow, &width, &height);
+    yPos = height - yPos;
 }
 
 void Window::framebuffer_size_callback(GLFWwindow* p_window, int width, int height)
