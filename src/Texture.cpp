@@ -18,7 +18,7 @@
 //    return true;
 //}
 
-Texture::Texture() : internal_format(GL_RGB), image_format(GL_RGB)
+Texture::Texture() : internal_format(GL_RGB), image_format(GL_RGB), min_filter(GL_LINEAR), mag_filter(GL_NEAREST)
 {
     glGenTextures(1, &this->ID);
 }
@@ -31,8 +31,8 @@ void Texture::generate(unsigned int width, unsigned int height, unsigned char *d
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); //GL_NEAREST is good for pixel graphics
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this->min_filter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, this->mag_filter); //GL_NEAREST is good for pixel graphics
 
     glTexImage2D(GL_TEXTURE_2D, 0, this->internal_format, width, height, 0, this->image_format, GL_UNSIGNED_BYTE, data);
 

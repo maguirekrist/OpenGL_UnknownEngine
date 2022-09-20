@@ -42,7 +42,7 @@ void QuadRenderer::initRenderData() {
     glBindVertexArray(0);
 }
 
-void QuadRenderer::drawQuad(Texture &texture, Texture& atlas, Camera& camera) {
+void QuadRenderer::drawQuad(Texture &texture, Texture& atlas, Texture& lightMap, Camera& camera) {
     this->shader.use();
 
     glm::mat4 world = glm::mat4(1.0f);
@@ -53,6 +53,7 @@ void QuadRenderer::drawQuad(Texture &texture, Texture& atlas, Camera& camera) {
     this->shader.setMat4("view", world);
     this->shader.setInt("aTexture", 0);
     this->shader.setInt("atlas", 1);
+    this->shader.setInt("lightMap", 2);
 
     glActiveTexture(GL_TEXTURE0);
     texture.bind();
@@ -60,7 +61,14 @@ void QuadRenderer::drawQuad(Texture &texture, Texture& atlas, Camera& camera) {
     glActiveTexture(GL_TEXTURE1);
     atlas.bind();
 
+    glActiveTexture(GL_TEXTURE2);
+    lightMap.bind();
+
+//    glEnable(GL_BLEND);
+//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);
+
     glBindVertexArray(this->quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
+    //glDisable(GL_BLEND);
 }

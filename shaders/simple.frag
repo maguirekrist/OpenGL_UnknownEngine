@@ -1,10 +1,12 @@
 #version 330 core
-in vec2 TexCoords;
 
 out vec4 color;
 
 uniform sampler2D aTexture;
 uniform sampler2D atlas;
+
+uniform sampler2D lightMap;
+
 
 uniform mat4 view; //Matrix is responsible for converting screen coord (gl_FragCoord) to world coodinates.
                     //View will also translate and scale world (scroll/zoom)
@@ -18,13 +20,13 @@ void main()
     //Tile here represents a 1 tile in the aTexture tile map, x, y is tile position, z, w is offset into atlas
     vec2 worldPosition = vec2(view * vec4(gl_FragCoord.xy, 0, 1));
 
+
+
+
     vec4 tile = texelFetch(aTexture, ivec2(worldPosition), 0);
-
-    //Tile is correct
-    //Needs:
-    //Transform the
-
-
+    //tileDiffuse
+    //vec4 tileColor = texelFetch(lightMap, ivec2(worldPosition), 0);
+    vec4 tileColor = texture(lightMap, vec2(worldPosition.x / mapSize.x, worldPosition.y / mapSize.y));
     //vec2 normPixel = ivec2(gl_FragCoord) % 16;
 
     vec2 inTilePosition = vec2(fract(worldPosition.x) * tileSize, fract(worldPosition.y) * tileSize);
@@ -38,7 +40,6 @@ void main()
 
     //Translate tileCoord by inTilePosition
     tileCoord = tileCoord + inTilePosition;
-
     //vec4 inAtlas = texelFetch(atlas, ivec2(tileCoord), 0);
-    color = texture(atlas, tileCoord);
+    color = texture(atlas, tileCoord) * tileColor;
 }

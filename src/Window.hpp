@@ -14,6 +14,7 @@
 #include "Light.hpp"
 #include "Camera.hpp"
 #include <GLFW/glfw3.h>
+#include <functional>
 
 class Window {
 public: 
@@ -21,7 +22,9 @@ public:
     ~Window();
 
     Camera& camera;
-       
+
+    std::vector<std::function<void(glm::vec2)>> events;
+
     int height;
     int width;
     
@@ -29,7 +32,8 @@ public:
     void processInput();
     void update();
     bool isOpen();
-    
+
+
 private:
     GLFWwindow* glfwWindow;
 

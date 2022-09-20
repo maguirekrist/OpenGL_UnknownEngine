@@ -5,12 +5,13 @@
 class Light
 {
 public:
-	Light(glm::vec3 position);
-	~Light();
+	Light(glm::vec2 position, float strength, float radius) : position(position), strength(strength), radius(radius) {};
 
 
-
-	glm::vec3 position;
+    bool active = true;
+    float strength;
+    float radius;
+	glm::vec2 position;
 private:
 
 };

@@ -15,6 +15,9 @@ public:
     unsigned int internal_format; // format of texture object
     unsigned int image_format; // format of loaded image
 
+    unsigned int min_filter;
+    unsigned int mag_filter;
+
 	int height;
 	int width;
 	int nrChannels;

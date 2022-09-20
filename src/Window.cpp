@@ -132,7 +132,15 @@ void Window::mouse_button_callback(GLFWwindow* p_window, int button, int action,
 
         glm::vec3 dir = glm::normalize((v1 - v0));
 
-        std::cout << "CamPos: " << window->camera.cameraPos.x << " & " << window->camera.cameraPos.y << std::endl;
+        glm::mat4 world = glm::mat4(1.0f);
+        world = glm::translate(world, window->camera.cameraPos);
+        world = glm::scale(world, glm::vec3(window->camera.zoom,  window->camera.zoom, 1.0f));
+
+        glm::vec2 mouseClickPos = glm::vec2(world * glm::vec4(xpos, y, 0, 1));
+
+        std::cout << "MouseClick: " << mouseClickPos.x << " & " << mouseClickPos.y << std::endl;
+
+        window->events[0](mouseClickPos);
         //RayCast
         //Cube* result = window->Raycast(dir);
     }

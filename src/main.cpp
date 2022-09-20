@@ -7,17 +7,10 @@
 #include <array>
 #include <GL/glew.h>
 #include <iostream>
-#include <stdio.h>
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include <vector>
-#include <algorithm>
 #include "Camera.hpp"
 #include "Shader.hpp"
-#include "Types.hpp"
-#include "Cube.hpp"
-#include "Renderers/CubeRenderer.hpp"
 #include "Window.hpp"
 #include "ResourceManager.hpp"
 #include "Renderers/SpriteRenderer.h"
@@ -54,7 +47,22 @@ int main(int argc, const char * argv[]) {
 
     world.generate(256, 256);
 
+    std::vector<Light> lights = {
+            Light(glm::vec2(32, 32), 24.0f, 24.0f),
+            Light(glm::vec2(32, 64), 24.0f, 24.0f)
+    };
+
+    Texture lightMap = world.generateWorldLightTexture(lights);
     Texture worldText = world.generateWorldTexture();
+
+    auto lambda = [&](glm::vec2 pos){
+        std::cout << "Light added" << std::endl;
+        lights.push_back(Light(pos, 24.0f, 24.0f));
+        lightMap = world.generateWorldLightTexture(lights);
+    };
+
+    window.events.push_back(lambda);
+
 
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
     std::cout << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
@@ -69,7 +77,7 @@ int main(int argc, const char * argv[]) {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        testRenderer->drawQuad(worldText, ResourceManager::getTexture("container"), camera);
+        testRenderer->drawQuad(worldText, ResourceManager::getTexture("container"), lightMap, camera);
 
         window.update();
 

@@ -9,6 +9,7 @@
 #include <vector>
 #include "Tile.h"
 #include "Texture.hpp"
+#include "Light.hpp"
 
 class World {
 public:
@@ -19,6 +20,7 @@ public:
 
     void generate(int width, int height);
     Texture generateWorldTexture();
+    Texture generateWorldLightTexture(std::vector<Light> lights);
 };
 
 
