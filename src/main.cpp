@@ -18,8 +18,8 @@
 #include "Renderers/WorldRenderer.h"
 #include "Renderers/QuadRenderer.h"
 
-const int WINDOW_HEIGHT = 1024;
-const int WINDOW_WIDTH = 1024;
+const int WINDOW_HEIGHT = 512;
+const int WINDOW_WIDTH = 512;
 
 int main(int argc, const char * argv[]) {
     // insert code here...s
@@ -43,22 +43,20 @@ int main(int argc, const char * argv[]) {
     QuadRenderer* testRenderer = new QuadRenderer(ResourceManager::getShader("simple"));
 
 
-    World world;
+    World world(256, 256);
 
     world.generate(256, 256);
 
-    std::vector<Light> lights = {
-            Light(glm::vec2(32, 32), 24.0f, 24.0f),
-            Light(glm::vec2(32, 64), 24.0f, 24.0f)
-    };
+    world.addLight(Light(glm::ivec2(32, 32), 24.0f, 24.0f));
+    world.addLight(Light(glm::ivec2(64, 64), 24.0f, 24.0f));
 
-    Texture lightMap = world.generateWorldLightTexture(lights);
+    Texture lightMap = world.generateWorldLightTexture();
     Texture worldText = world.generateWorldTexture();
 
-    auto lambda = [&](glm::vec2 pos){
+    auto lambda = [&](glm::ivec2 pos){
         std::cout << "Light added" << std::endl;
-        lights.push_back(Light(pos, 24.0f, 24.0f));
-        lightMap = world.generateWorldLightTexture(lights);
+        world.addLight(Light(pos, 24.0f, 24.0f));
+        lightMap = world.generateWorldLightTexture();
     };
 
     window.events.push_back(lambda);
