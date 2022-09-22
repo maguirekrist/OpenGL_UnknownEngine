@@ -27,15 +27,17 @@ public:
     };
 
 
-    const std::vector<T>& getBucket(const glm::ivec2& position);
-    const std::vector<T>* tryGetBucket(const glm::ivec2& position); //TODO
+    std::vector<T>& getBucket(const glm::ivec2& position);
+    std::vector<T>& getBucket(int x, int y);
+
+    const std::vector<T>* tryGetBucket(const glm::ivec2& position);
     bool exists(glm::ivec2 position);
-    void insert(glm::ivec2 position, T datum);
+    void insert(const glm::ivec2& position, T datum);
     void remove(glm::ivec2 position, T datum);
 };
 
 template<typename T>
-const std::vector<T>& SpatialMap<T>::getBucket(const glm::ivec2& position) {
+std::vector<T>& SpatialMap<T>::getBucket(const glm::ivec2& position) {
     int x = (position.x / binWidth) % tableSize;
     int y = (position.y / binWidth) % tableSize;
 
@@ -43,11 +45,48 @@ const std::vector<T>& SpatialMap<T>::getBucket(const glm::ivec2& position) {
 }
 
 template<typename T>
-const std::vector<T>* tryGetBucket(const glm::ivec2& position)
+std::vector<T>& SpatialMap<T>::getBucket(int x, int y) {
+
+    return table[y*tableSize + x];
+}
+
+
+template<typename T>
+const std::vector<T>* SpatialMap<T>::tryGetBucket(const glm::ivec2& position)
 {
-    //TODO: GOAL ~ use this function to return a vector of entities that may effect a given ivec2 position.
-    //We can assume that lights at a limit radius of effect, so really, we shouldn't need to scan for many nearby quadrants
-    return nullptr;
+
+    //Calculate section of bin the tile is under
+    int x = (position.x / binWidth) % tableSize;
+    int y = (position.y / binWidth) % tableSize;
+
+    int modX = position.x % binWidth;
+    int modY = position.y % binWidth;
+    int half = binWidth / 2;
+
+    //We know we are searching right
+    if(modX >= half)
+    {
+
+    } else {
+
+    }
+    //We know we are searching top
+    if(modY >= half)
+    {
+
+    } else {
+
+    }
+
+    //We need to get 3 other buckets
+    auto& bucket = getBucket(position);
+
+    if(bucket.size() > 0)
+    {
+        return &bucket;
+    } else {
+        return nullptr;
+    }
 }
 
 template<typename T>
@@ -58,7 +97,7 @@ bool SpatialMap<T>::exists(glm::ivec2 position) {
 }
 
 template<typename T>
-void SpatialMap<T>::insert(glm::ivec2 position, T datum) {
+void SpatialMap<T>::insert(const glm::ivec2& position, T datum) {
     auto& bucket = getBucket(position);
 
     bucket.push_back(datum);

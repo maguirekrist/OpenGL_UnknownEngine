@@ -95,19 +95,24 @@ Texture World::generateWorldLightTexture() {
     auto start = std::chrono::steady_clock::now();
     for(auto iter : this->tiles){
         float value = (0.0f + ambient);
+        const std::vector<Light>* lights = spatialMap.tryGetBucket(iter.position);
 
-        if(spatialMap.exists(iter.position)) {
-//            const Light* nearestLight = findNearestLight(spatialMap.getBucket(iter.position), iter.position);
-//            float distance = std::abs(glm::distance(iter.position, nearestLight->position));
-//            //find nearest tile
-//            if(nearestLight->radius >= distance) {
-//                value = std::clamp((-distance * 32) + 255, 0.0f, 255.0f);
-//                value = std::clamp(value + ambient, 0.0f, 255.0f);
-//            }
-
-            value = sumWorldLights(spatialMap.getBucket(iter.position), iter.position);
+        if(lights)
+        {
+            value = sumWorldLights(*lights, iter.position);
             value = std::clamp(value + ambient, 0.0f, 255.0f);
         }
+
+
+//        if(spatialMap.exists(iter.position)) {
+////            const Light* nearestLight = findNearestLight(spatialMap.getBucket(iter.position), iter.position);
+////            float distance = std::abs(glm::distance(iter.position, nearestLight->position));
+////            //find nearest tile
+////            if(nearestLight->radius >= distance) {
+////                value = std::clamp((-distance * 32) + 255, 0.0f, 255.0f);
+////                value = std::clamp(value + ambient, 0.0f, 255.0f);
+////            }
+//        }
         stuff.push_back(value);
         stuff.push_back(value);
         stuff.push_back(value);
