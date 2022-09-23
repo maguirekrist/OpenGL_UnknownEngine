@@ -1,0 +1,12 @@
+C:/Users/magui/dev/OpenGL_UnknownEngine/out/build/x64-Debug/CMakeFiles/AlphaEngineCMake.dir
+C:/Users/magui/dev/OpenGL_UnknownEngine/out/build/x64-Debug/CMakeFiles/edit_cache.dir
+C:/Users/magui/dev/OpenGL_UnknownEngine/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir
+C:/Users/magui/dev/OpenGL_UnknownEngine/out/build/x64-Debug/CMakeFiles/list_install_components.dir
+C:/Users/magui/dev/OpenGL_UnknownEngine/out/build/x64-Debug/CMakeFiles/install.dir
+C:/Users/magui/dev/OpenGL_UnknownEngine/out/build/x64-Debug/CMakeFiles/install/local.dir
+C:/Users/magui/dev/OpenGL_UnknownEngine/out/build/x64-Debug/src/tracy/CMakeFiles/TracyClient.dir
+C:/Users/magui/dev/OpenGL_UnknownEngine/out/build/x64-Debug/src/tracy/CMakeFiles/edit_cache.dir
+C:/Users/magui/dev/OpenGL_UnknownEngine/out/build/x64-Debug/src/tracy/CMakeFiles/rebuild_cache.dir
+C:/Users/magui/dev/OpenGL_UnknownEngine/out/build/x64-Debug/src/tracy/CMakeFiles/list_install_components.dir
+C:/Users/magui/dev/OpenGL_UnknownEngine/out/build/x64-Debug/src/tracy/CMakeFiles/install.dir
+C:/Users/magui/dev/OpenGL_UnknownEngine/out/build/x64-Debug/src/tracy/CMakeFiles/install/local.dir

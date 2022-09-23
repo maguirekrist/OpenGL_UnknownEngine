@@ -4,6 +4,7 @@
 
 #include "QuadRenderer.h"
 #include "Window.hpp"
+#include "World.h"
 
 QuadRenderer::QuadRenderer(Shader& shader) {
     this->shader = shader;
@@ -42,27 +43,23 @@ void QuadRenderer::initRenderData() {
     glBindVertexArray(0);
 }
 
-void QuadRenderer::drawQuad(Texture &texture, Texture& atlas, Texture& lightMap, Camera& camera) {
+void QuadRenderer::drawWorld(const World& world, const Camera& camera) {
     this->shader.use();
 
-    glm::mat4 world = glm::mat4(1.0f);
-    world = glm::translate(world, camera.cameraPos);
-    world = glm::scale(world, glm::vec3(camera.zoom,  camera.zoom, 1.0f));
 
-
-    this->shader.setMat4("view", world);
+    this->shader.setMat4("view", camera.view);
     this->shader.setInt("aTexture", 0);
     this->shader.setInt("atlas", 1);
     this->shader.setInt("lightMap", 2);
 
     glActiveTexture(GL_TEXTURE0);
-    texture.bind();
+    world.tileMap.bind();
 
     glActiveTexture(GL_TEXTURE1);
-    atlas.bind();
+    world.atlas.bind();
 
     glActiveTexture(GL_TEXTURE2);
-    lightMap.bind();
+    world.lightMap.bind();
 
 //    glEnable(GL_BLEND);
 //    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);

@@ -1,0 +1,155 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"install"
+		],
+		"files" : 
+		[
+			"src/tracy/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 118,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 123,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 125,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 127,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 129,
+				"parent" : 0
+			}
+		]
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"src/tracy/TracyClient.lib"
+			],
+			"targetId" : "TracyClient::@0f2ded50eca51282338c",
+			"targetIndex" : 1,
+			"type" : "target"
+		},
+		{
+			"backtrace" : 2,
+			"component" : "Unspecified",
+			"destination" : "include",
+			"paths" : 
+			[
+				"src/tracy/TracyC.h",
+				"src/tracy/Tracy.hpp",
+				"src/tracy/TracyD3D11.hpp",
+				"src/tracy/TracyD3D12.hpp",
+				"src/tracy/TracyLua.hpp",
+				"src/tracy/TracyOpenCL.hpp",
+				"src/tracy/TracyOpenGL.hpp",
+				"src/tracy/TracyVulkan.hpp"
+			],
+			"type" : "file"
+		},
+		{
+			"backtrace" : 3,
+			"component" : "Unspecified",
+			"destination" : "include/client",
+			"paths" : 
+			[
+				"src/tracy/client/tracy_concurrentqueue.h",
+				"src/tracy/client/tracy_rpmalloc.hpp",
+				"src/tracy/client/tracy_SPSCQueue.h",
+				"src/tracy/client/TracyArmCpuTable.hpp",
+				"src/tracy/client/TracyCallstack.h",
+				"src/tracy/client/TracyCallstack.hpp",
+				"src/tracy/client/TracyDebug.hpp",
+				"src/tracy/client/TracyDxt1.hpp",
+				"src/tracy/client/TracyFastVector.hpp",
+				"src/tracy/client/TracyLock.hpp",
+				"src/tracy/client/TracyProfiler.hpp",
+				"src/tracy/client/TracyRingBuffer.hpp",
+				"src/tracy/client/TracyScoped.hpp",
+				"src/tracy/client/TracyStringHelpers.hpp",
+				"src/tracy/client/TracySysTime.hpp",
+				"src/tracy/client/TracySysTrace.hpp",
+				"src/tracy/client/TracyThread.hpp"
+			],
+			"type" : "file"
+		},
+		{
+			"backtrace" : 4,
+			"component" : "Unspecified",
+			"destination" : "include/common",
+			"paths" : 
+			[
+				"src/tracy/common/tracy_lz4.hpp",
+				"src/tracy/common/tracy_lz4hc.hpp",
+				"src/tracy/common/TracyAlign.hpp",
+				"src/tracy/common/TracyAlign.hpp",
+				"src/tracy/common/TracyAlloc.hpp",
+				"src/tracy/common/TracyApi.h",
+				"src/tracy/common/TracyColor.hpp",
+				"src/tracy/common/TracyForceInline.hpp",
+				"src/tracy/common/TracyMutex.hpp",
+				"src/tracy/common/TracyProtocol.hpp",
+				"src/tracy/common/TracyQueue.hpp",
+				"src/tracy/common/TracySocket.hpp",
+				"src/tracy/common/TracyStackFrames.hpp",
+				"src/tracy/common/TracySystem.hpp",
+				"src/tracy/common/TracyUwp.hpp",
+				"src/tracy/common/TracyYield.hpp"
+			],
+			"type" : "file"
+		},
+		{
+			"backtrace" : 5,
+			"component" : "Unspecified",
+			"destination" : "share/Tracy",
+			"exportName" : "TracyConfig",
+			"exportTargets" : 
+			[
+				{
+					"id" : "TracyClient::@0f2ded50eca51282338c",
+					"index" : 1
+				}
+			],
+			"paths" : 
+			[
+				"src/tracy/CMakeFiles/Export/share/Tracy/TracyConfig.cmake"
+			],
+			"type" : "export"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "src/tracy",
+		"source" : "src/tracy"
+	}
+}

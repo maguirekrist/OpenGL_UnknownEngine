@@ -31,16 +31,21 @@ public:
     int width = 256, height = 256;
     std::vector<Tile> tiles;
     SpatialMap<Light> spatialMap;
+    std::vector<std::uint8_t> lightMapImage;
 
-    World(int width, int height) : width(width), height(height), spatialMap{(size_t)width/16, 16} {}
+    Texture lightMap;
+    Texture tileMap;
+    Texture atlas;
+
+    World(int width, int height, Texture atlas) : width(width), height(height), spatialMap{(size_t)width/16, 16}, atlas(atlas) {}
 
     void generate(int width, int height);
     void addLight(Light light);
-    Texture generateWorldTexture();
-    Texture generateWorldLightTexture();
+    void generateWorldTexture();
+    void generateWorldLightTexture();
 private:
-    const Light* findNearestLight(const std::vector<Light>& lights, glm::vec2 pos);
     float sumWorldLights(std::vector<Light> const& lights, glm::vec2);
+    void updateWorldLightTexture(const Light& light);
 };
 
 

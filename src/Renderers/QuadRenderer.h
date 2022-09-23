@@ -10,6 +10,7 @@
 #include "Shader.hpp"
 #include "Camera.hpp"
 #include "Window.hpp"
+#include "World.h"
 
 class QuadRenderer {
 public:
@@ -22,6 +23,7 @@ public:
     void initRenderData();
 
     void drawQuad(Texture& texture, Texture& atlas, Texture& lightMap, Camera& camera);
+    void drawWorld(const World& world, const Camera& camera);
 };
 
 

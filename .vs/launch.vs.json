@@ -1,0 +1,13 @@
+{
+  "version": "0.2.1",
+  "defaults": {},
+  "configurations": [
+    {
+      "type": "default",
+      "project": "CMakeLists.txt",
+      "projectTarget": "AlphaEngineCMake.exe",
+      "name": "AlphaEngineCMake.exe",
+      "currentDir": "C:\\Users\\magui\\dev\\OpenGL_UnknownEngine\\src"
+    }
+  ]
+}

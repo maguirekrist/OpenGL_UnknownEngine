@@ -15,7 +15,6 @@ Camera::Camera(glm::vec3 defaultPos, int width, int height) {
     //projection = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f); //we may use projection later on, so keep this in mind
 
     view = glm::mat4(1.0f);
-
     //projection = glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height), -1.0f, 1.0f);
 }
 
@@ -44,7 +43,9 @@ void Camera::moveRight() {
 }
 
 void Camera::updateCamView() {
-    //view = glm::translate(this->view, this->cameraPos);
+    view = glm::mat4(1.0f);
+    view = glm::translate(view, cameraPos);
+    view = glm::scale(view, glm::vec3(zoom, zoom, 1.0f));
 }
 
 void Camera::updateProjection(int width, int height) {

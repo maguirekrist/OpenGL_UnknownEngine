@@ -1,0 +1,2 @@
+#pragma code_page(65001)
+1 /* CREATEPROCESS_MANIFEST_RESOURCE_ID */ 24 /* RT_MANIFEST */ "C:/Users/magui/dev/OpenGL_UnknownEngine/out/build/x64-Debug/CMakeFiles/AlphaEngineCMake.dir/embed.manifest"

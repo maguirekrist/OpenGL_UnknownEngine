@@ -4,6 +4,7 @@
 //
 //  Created by Maguire Krist on 4/16/22.
 //
+
 #include <array>
 #include <GL/glew.h>
 #include <iostream>
@@ -17,6 +18,7 @@
 #include "World.h"
 #include "Renderers/WorldRenderer.h"
 #include "Renderers/QuadRenderer.h"
+#include "Tracy.hpp"
 
 const int WINDOW_HEIGHT = 512;
 const int WINDOW_WIDTH = 512;
@@ -43,20 +45,19 @@ int main(int argc, const char * argv[]) {
     QuadRenderer* testRenderer = new QuadRenderer(ResourceManager::getShader("simple"));
 
 
-    World world(256, 256);
+    World world(256, 256, ResourceManager::getTexture("container"));
 
     world.generate(256, 256);
 
-    world.addLight(Light(glm::ivec2(32, 32), 24.0f, 24.0f));
-    world.addLight(Light(glm::ivec2(64, 64), 24.0f, 24.0f));
+    world.addLight(Light(glm::ivec2(32, 32), 1.0f, 12));
+    world.addLight(Light(glm::ivec2(64, 64), 1.0f, 12));
 
-    Texture lightMap = world.generateWorldLightTexture();
-    Texture worldText = world.generateWorldTexture();
+//    Texture lightMap = world.generateWorldLightTexture();
+//    Texture worldText = world.generateWorldTexture();
 
     auto lambda = [&](glm::ivec2 pos){
         std::cout << "Light added" << std::endl;
-        world.addLight(Light(pos, 24.0f, 24.0f));
-        lightMap = world.generateWorldLightTexture();
+        world.addLight(Light(pos, 1.0f, 8));
     };
 
     window.events.push_back(lambda);
@@ -75,7 +76,7 @@ int main(int argc, const char * argv[]) {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        testRenderer->drawQuad(worldText, ResourceManager::getTexture("container"), lightMap, camera);
+        testRenderer->drawWorld(world, camera);
 
         window.update();
 
@@ -88,6 +89,7 @@ int main(int argc, const char * argv[]) {
         camera.updateCamView();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        FrameMark;
     }
 
     ResourceManager::clear();

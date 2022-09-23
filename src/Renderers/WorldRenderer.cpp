@@ -41,31 +41,29 @@ void WorldRenderer::initRenderData() {
 }
 
 void WorldRenderer::DrawWorld(World &world, Texture &atlas, Camera &camera) {
-    this->shader.use();
-
-    glm::mat4 model = glm::mat4(1.0f);
-//    model = glm::translate(model, glm::vec3(0.5f * world.width, 0.5f * world.height, 0.0f));
-//    model = glm::translate(model, glm::vec3(-0.5f * world.width, -0.5f * world.height, 0.0f));
-
-    model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-
-    this->shader.setInt("atlasTexture", 0);
-    this->shader.setInt("tileMap", 1);
-    this->shader.setMat4("model", model);
-    this->shader.setMat4("view", camera.view);
-    this->shader.setMat4("projection", camera.projection);
-
-    Texture tileMap = world.generateWorldTexture();
-
-
-    glActiveTexture(GL_TEXTURE0);
-    atlas.bind();
-
-    glActiveTexture(GL_TEXTURE1);
-    tileMap.bind();
-
-
-    glBindVertexArray(this->quadVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    glBindVertexArray(0);
+//    this->shader.use();
+//
+//    glm::mat4 model = glm::mat4(1.0f);
+////    model = glm::translate(model, glm::vec3(0.5f * world.width, 0.5f * world.height, 0.0f));
+////    model = glm::translate(model, glm::vec3(-0.5f * world.width, -0.5f * world.height, 0.0f));
+//
+//    model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+//
+//    this->shader.setInt("atlasTexture", 0);
+//    this->shader.setInt("tileMap", 1);
+//    this->shader.setMat4("model", model);
+//    this->shader.setMat4("view", camera.view);
+//    this->shader.setMat4("projection", camera.projection);
+//
+//
+//    glActiveTexture(GL_TEXTURE0);
+//    atlas.bind();
+//
+//    glActiveTexture(GL_TEXTURE1);
+//    tileMap.bind();
+//
+//
+//    glBindVertexArray(this->quadVAO);
+//    glDrawArrays(GL_TRIANGLES, 0, 6);
+//    glBindVertexArray(0);
 }

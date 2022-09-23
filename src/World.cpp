@@ -6,7 +6,7 @@
 #include "Light.hpp"
 #include <random>
 #include <glm/geometric.hpp>
-
+#include <Tracy.hpp>
 
 //Generates procedural world based on height and width;
 void World::generate(int width, int height) {
@@ -23,12 +23,15 @@ void World::generate(int width, int height) {
             float rand = dist6(rng);
             glm::vec2 offset = glm::vec2(0.0f, 7.0f + rand);
             glm::vec2 position = glm::vec2(j, i);
-            tiles.emplace_back(Tile("container", offset, position,  16, 16));
+            tiles.emplace_back(Tile(offset, position,  16, 16));
         }
     }
+
+    generateWorldTexture();
+    generateWorldLightTexture();
 }
 
-Texture World::generateWorldTexture() {
+void World::generateWorldTexture() {
     //Width x Height must equal the flat stream of bytes
     std::vector<std::uint8_t> stuff;
     stuff.reserve((this->width * this->height) * 4);
@@ -47,44 +50,24 @@ Texture World::generateWorldTexture() {
     text.image_format = GL_RGBA;
 
     text.generate(this->width, this->height, stuff.data());
-    return text;
+    tileMap = text;
 }
 
-const Light* World::findNearestLight(const std::vector<Light>& lights, glm::vec2 pos) {
-
-    float distance;
-    const Light* target = nullptr;
-
-
-    for(int i = 0; i < lights.size(); i++) {
-        float temp = glm::distance(pos,  lights[i].position);
-
-        if(i == 0)
-            distance = std::abs(temp);
-
-        if(std::abs(temp) <= distance) {
-            distance = std::abs(temp); //store shortest distance
-            target = &lights[i];
-        }
-    }
-
-    return target;
-}
 
 float World::sumWorldLights(const std::vector<Light> &lights, glm::vec2 pos) {
     float value = 0.0f;
     for(int i = 0; i < lights.size(); i++)
     {
-        float distance = glm::distance(pos, lights[i].position);
+        float distance = glm::distance(pos, glm::vec2(lights[i].position.x, lights[i].position.y));
         value += std::clamp((-distance * 32) + 255, 0.0f, 255.0f);
     }
 
     return value;
 }
 
-Texture World::generateWorldLightTexture() {
+void World::generateWorldLightTexture() {
     //Width x Height must equal the flat stream of bytes
-
+    ZoneScoped;
     std::vector<std::uint8_t> stuff;
     glm::vec2 center = glm::vec2(this->width / 2, this->height / 2);
 
@@ -92,7 +75,6 @@ Texture World::generateWorldLightTexture() {
 
     stuff.reserve((this->width * this->height) * 4);
 
-    auto start = std::chrono::steady_clock::now();
     for(auto iter : this->tiles){
         float value = (0.0f + ambient);
         const std::vector<Light>* lights = spatialMap.tryGetBucket(iter.position);
@@ -103,24 +85,11 @@ Texture World::generateWorldLightTexture() {
             value = std::clamp(value + ambient, 0.0f, 255.0f);
         }
 
-
-//        if(spatialMap.exists(iter.position)) {
-////            const Light* nearestLight = findNearestLight(spatialMap.getBucket(iter.position), iter.position);
-////            float distance = std::abs(glm::distance(iter.position, nearestLight->position));
-////            //find nearest tile
-////            if(nearestLight->radius >= distance) {
-////                value = std::clamp((-distance * 32) + 255, 0.0f, 255.0f);
-////                value = std::clamp(value + ambient, 0.0f, 255.0f);
-////            }
-//        }
         stuff.push_back(value);
         stuff.push_back(value);
         stuff.push_back(value);
         stuff.push_back(value);
     }
-    auto end = std::chrono::steady_clock::now();
-    auto time = end - start;
-    std::cout << "Time to generate texture in miliseconds -> " << std::chrono::duration_cast<std::chrono::microseconds>(time).count() << std::endl;
 
 
     Texture text;
@@ -132,9 +101,62 @@ Texture World::generateWorldLightTexture() {
 
     text.generate(this->width, this->height, stuff.data());
 
-    return text;
+    lightMapImage = stuff;
+    lightMap = text;
+}
+
+void World::updateWorldLightTexture(const Light &light) {
+    ZoneScoped;
+    float ambient = 40.0f;
+    //const int channel_size = 4;
+    int diameter = (light.radius * 2);//we use RGBA 4 byte channel for textures, if this changes to be a singular byte or something, update this value and everything should still work
+    //int lightCenter = (light.position.x * light.position.y)*channel_size;//4 being the number of bytes in the
+    int start_x = std::clamp((int)(light.position.x - light.radius), 0, width);
+    int start_y = std::clamp((int)(light.position.y - light.radius), 0, height);
+    int end_y = std::clamp((start_y + diameter), 0, height);
+    int start = (start_y * height + start_x);
+
+    // how many iterations we do per skip
+    //int texture_width = width * channel_size;
+
+    int skip = std::abs((diameter + start) - width); //how much to skip in the iteration
+
+    std::vector<Tile>::iterator tilePtr;
+
+    for(int y = 0; y < diameter; y++)
+    {
+        auto newStart = tiles.begin() + (start + (height * y));
+        for(tilePtr = newStart; tilePtr < newStart + diameter; tilePtr++) {
+            float value = (0.0f + ambient);
+            const std::vector<Light> lights = spatialMap.tryGetBucketMany(tilePtr->position);
+
+            value = sumWorldLights(lights, tilePtr->position);
+            value = std::clamp(value + ambient, 0.0f, 255.0f);
+
+            int inPos = (int)((tilePtr->position.y * height + tilePtr->position.x)*4);
+
+            lightMapImage[inPos] = static_cast<std::uint8_t>(value);
+            lightMapImage[inPos+1] = static_cast<std::uint8_t>(value);
+            lightMapImage[inPos+2] = static_cast<std::uint8_t>(value);
+            lightMapImage[inPos+3] = static_cast<std::uint8_t>(value);
+        }
+    }
+
+    lightMap.generate(width, height, lightMapImage.data());
+
+//
+//    std::vector<std::uint8_t>::iterator ptr;
+//
+//    for(int y = start_y; y < (start_y + light.radius); y++)
+//    {
+//        for(ptr = lightMapImage.begin() + (start + (skip * y)); ptr < lightMapImage.begin() + diameter; ptr++) {
+//
+//        }
+//    }
+
 }
 
 void World::addLight(Light light) {
     spatialMap.insert(light.position, light);
+    updateWorldLightTexture(light);
 }
