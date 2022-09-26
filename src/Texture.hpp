@@ -5,7 +5,7 @@
 #include <iostream>
 
 
-class Texture
+class  Texture
 {
 public:
 	Texture();
@@ -17,6 +17,8 @@ public:
 
     unsigned int min_filter;
     unsigned int mag_filter;
+
+    unsigned int dimension;
 
 	int height;
 	int width;

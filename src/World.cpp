@@ -21,11 +21,12 @@ void World::generate(int width, int height) {
     for(int i = 0; i < height; i++) {
         for(int j = 0; j < width; j++) {
             float rand = dist6(rng);
-            glm::vec2 offset = glm::vec2(0.0f, 7.0f + rand);
+            glm::vec2 offset = glm::vec2(0.0f, 5.0f + rand);
             glm::vec2 position = glm::vec2(j, i);
-            tiles.emplace_back(Tile(offset, position,  16, 16));
+            tiles.emplace_back(Tile(offset, position,  8, 8));
         }
     }
+
 
     generateWorldTexture();
     generateWorldLightTexture();
@@ -154,6 +155,14 @@ void World::updateWorldLightTexture(const Light &light) {
 //        }
 //    }
 
+}
+
+void World::tickWorldTime(double dt) {
+    tickAccumulator += dt;
+    if(tickAccumulator >= 1){
+        worldTime += 1.0f / 60.0f;
+        tickAccumulator = 0;
+    }
 }
 
 void World::addLight(Light light) {

@@ -18,7 +18,7 @@
 //    return true;
 //}
 
-Texture::Texture() : internal_format(GL_RGB), image_format(GL_RGB), min_filter(GL_LINEAR), mag_filter(GL_NEAREST)
+Texture::Texture() : internal_format(GL_RGB), image_format(GL_RGB), min_filter(GL_LINEAR), mag_filter(GL_NEAREST), dimension(GL_TEXTURE_2D)
 {
     glGenTextures(1, &this->ID);
 }
@@ -27,20 +27,26 @@ void Texture::generate(unsigned int width, unsigned int height, unsigned char *d
     this->width = width;
     this->height = height;
 
-    glBindTexture(GL_TEXTURE_2D, this->ID);
+    glBindTexture(dimension, this->ID);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, this->min_filter);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, this->mag_filter); //GL_NEAREST is good for pixel graphics
+    glTexParameteri(dimension, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(dimension, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(dimension, GL_TEXTURE_MIN_FILTER, this->min_filter);
+    glTexParameteri(dimension, GL_TEXTURE_MAG_FILTER, this->mag_filter); //GL_NEAREST is good for pixel graphics
 
-    glTexImage2D(GL_TEXTURE_2D, 0, this->internal_format, width, height, 0, this->image_format, GL_UNSIGNED_BYTE, data);
+    switch(dimension) {
+        case GL_TEXTURE_2D:
+            glTexImage2D(GL_TEXTURE_2D, 0, this->internal_format, width, height, 0, this->image_format, GL_UNSIGNED_BYTE, data);
+            break;
+        case GL_TEXTURE_1D:
+            glTexImage1D(GL_TEXTURE_1D, 0, this->internal_format, width, 0, this->image_format, GL_UNSIGNED_BYTE, data);
+            break;
+    }
 
-    glBindTexture(GL_TEXTURE_2D, 0);
-
+    glBindTexture(dimension, 0);
 }
 
 void Texture::bind() const
 {
-    glBindTexture(GL_TEXTURE_2D, this->ID);
+    glBindTexture(dimension, this->ID);
 }

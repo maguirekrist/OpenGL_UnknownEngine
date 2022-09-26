@@ -34,16 +34,22 @@ public:
     std::vector<std::uint8_t> lightMapImage;
 
     Texture lightMap;
+    Texture ambient;
     Texture tileMap;
     Texture atlas;
 
-    World(int width, int height, Texture atlas) : width(width), height(height), spatialMap{(size_t)width/16, 16}, atlas(atlas) {}
+    double worldTime;
+
+    World(int width, int height, Texture atlas, Texture ambient) : width(width), height(height), spatialMap{(size_t)width/16, 16}, atlas(atlas), ambient(ambient) {}
 
     void generate(int width, int height);
     void addLight(Light light);
     void generateWorldTexture();
     void generateWorldLightTexture();
+    void tickWorldTime(double dt);
 private:
+    double tickAccumulator;
+
     float sumWorldLights(std::vector<Light> const& lights, glm::vec2);
     void updateWorldLightTexture(const Light& light);
 };

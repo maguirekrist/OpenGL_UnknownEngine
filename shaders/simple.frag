@@ -1,4 +1,4 @@
-#version 330 core
+#version 460 core
 
 out vec4 color;
 
@@ -6,12 +6,14 @@ uniform sampler2D aTexture;
 uniform sampler2D atlas;
 
 uniform sampler2D lightMap;
+uniform sampler1D ambient; //1D gradient texture that is used for day-night changes
 
 
 uniform mat4 view; //Matrix is responsible for converting screen coord (gl_FragCoord) to world coodinates.
                     //View will also translate and scale world (scroll/zoom)
+uniform float worldTime; // This value is used to sample ambientGradient to color our world for day/night cycle
 
-const int tileSize = 16;
+const int tileSize = 8;
 
 void main()
 {
@@ -19,10 +21,6 @@ void main()
     vec2 atlasSize = textureSize(atlas, 0);
     //Tile here represents a 1 tile in the aTexture tile map, x, y is tile position, z, w is offset into atlas
     vec2 worldPosition = vec2(view * vec4(gl_FragCoord.xy, 0, 1));
-
-
-
-
     vec4 tile = texelFetch(aTexture, ivec2(worldPosition), 0);
     //tileDiffuse
     //vec4 tileColor = texelFetch(lightMap, ivec2(worldPosition), 0);
@@ -41,5 +39,5 @@ void main()
     //Translate tileCoord by inTilePosition
     tileCoord = tileCoord + inTilePosition;
     //vec4 inAtlas = texelFetch(atlas, ivec2(tileCoord), 0);
-    color = texture(atlas, tileCoord) * tileColor;
+    color = texture(atlas, tileCoord) * clamp((texture(ambient, worldTime / 24.0f) +  tileColor), vec4(0.2f, 0.2f, 0.2f, 1.0f), vec4(1.0f, 1.0f, 1.0f, 1.0f));
 }

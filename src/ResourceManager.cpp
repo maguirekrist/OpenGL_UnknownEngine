@@ -75,8 +75,11 @@ void ResourceManager::loadShader(const char *vShaderFile,
     shaders[name] = shader;
 }
 
-void ResourceManager::loadTexture(const char *file, bool alpha, std::string name) {
+void ResourceManager::loadTexture(const char *file, bool alpha, std::string name, std::optional<std::function<void(Texture&)>> lambda) {
     Texture texture;
+
+    if(lambda.has_value())
+        lambda.value()(texture);
 
     if(alpha)
     {

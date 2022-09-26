@@ -28,6 +28,7 @@ public:
     void setVec3(const char * name, glm::vec3 vec3);
     void setVec4(const char * name, glm::vec4 vec4);
     void setInt(const char * name, int value);
+    void setFloat(const char * name, float value);
 
     void compile(const char* vertexSource, const char* fragmentSource, const char* geometrySource = nullptr);
 
