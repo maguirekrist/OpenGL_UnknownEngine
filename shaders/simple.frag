@@ -1,4 +1,4 @@
-#version 460 core
+#version 330 core
 
 out vec4 color;
 
@@ -27,6 +27,8 @@ void main()
     vec4 tileColor = texture(lightMap, vec2(worldPosition.x / mapSize.x, worldPosition.y / mapSize.y));
     //vec2 normPixel = ivec2(gl_FragCoord) % 16;
 
+    bool isOutOfWorld = (worldPosition.x > mapSize.x || worldPosition.x < 0) || (worldPosition.y > mapSize.y || worldPosition.y < 0);
+
     vec2 inTilePosition = vec2(fract(worldPosition.x) * tileSize, fract(worldPosition.y) * tileSize);
     inTilePosition = vec2(inTilePosition.x / atlasSize.x, inTilePosition.y / atlasSize.y);
 
@@ -38,6 +40,7 @@ void main()
 
     //Translate tileCoord by inTilePosition
     tileCoord = tileCoord + inTilePosition;
+
     //vec4 inAtlas = texelFetch(atlas, ivec2(tileCoord), 0);
-    color = texture(atlas, tileCoord) * clamp((texture(ambient, worldTime / 24.0f) +  tileColor), vec4(0.2f, 0.2f, 0.2f, 1.0f), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    color = (!isOutOfWorld ? (texture(atlas, tileCoord)) : vec4(0.0f, 0.0f, 0.0f, 0.0f)) * clamp((texture(ambient, worldTime / 24.0f) +  tileColor), vec4(0.2f, 0.2f, 0.2f, 1.0f), vec4(1.0f, 1.0f, 1.0f, 1.0f));
 }
