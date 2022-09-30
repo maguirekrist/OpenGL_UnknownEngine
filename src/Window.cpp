@@ -140,7 +140,7 @@ void Window::mouse_button_callback(GLFWwindow* p_window, int button, int action,
 
         std::cout << "MouseClick: " << mouseClickPos.x << " & " << mouseClickPos.y << std::endl;
 
-        window->events[0](mouseClickPos);
+        window->events[0](mouseClickPos, false);
         //RayCast
         //Cube* result = window->Raycast(dir);
     }

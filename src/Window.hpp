@@ -23,7 +23,7 @@ public:
 
     Camera& camera;
 
-    std::vector<std::function<void(glm::vec2)>> events;
+    std::vector<std::function<void(glm::vec2, bool)>> events;
 
     int height;
     int width;

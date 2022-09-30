@@ -44,6 +44,7 @@ public:
 
     void generate(int width, int height);
     void addLight(Light light);
+    void placeTile(Tile tile);
     void generateWorldTexture();
     void generateWorldLightTexture();
     void tickWorldTime(double dt);

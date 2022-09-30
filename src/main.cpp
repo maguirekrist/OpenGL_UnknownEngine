@@ -64,8 +64,9 @@ int main(int argc, const char * argv[]) {
 //    Texture lightMap = world.generateWorldLightTexture();
 //    Texture worldText = world.generateWorldTexture();
 
-    auto lambda = [&](glm::ivec2 pos){
+    auto lambda = [&](glm::ivec2 pos, bool isLight = false){
         std::cout << "Light added" << std::endl;
+
         world.addLight(Light(pos, 1.0f, 8));
     };
 

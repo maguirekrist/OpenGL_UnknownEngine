@@ -169,3 +169,7 @@ void World::addLight(Light light) {
     spatialMap.insert(light.position, light);
     updateWorldLightTexture(light);
 }
+
+void World::addTile(Tile tile) {
+
+}
