@@ -18,12 +18,11 @@
 #include "World.h"
 #include "Renderers/WorldRenderer.h"
 #include "Renderers/QuadRenderer.h"
-#include "Tracy.hpp"
 #include "renderers/FontRenderer.h"
 #include "utils/Timer.h"
 
-const int WINDOW_HEIGHT = 1024;
-const int WINDOW_WIDTH = 1024;
+const int WINDOW_HEIGHT = 800;
+const int WINDOW_WIDTH = 800;
 
 int main(int argc, const char * argv[]) {
     // insert code here...s
@@ -109,8 +108,6 @@ int main(int argc, const char * argv[]) {
         window.update();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        FrameMark;
     }
 
     ResourceManager::clear();

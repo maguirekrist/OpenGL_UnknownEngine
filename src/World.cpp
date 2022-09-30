@@ -6,7 +6,6 @@
 #include "Light.hpp"
 #include <random>
 #include <glm/geometric.hpp>
-#include <Tracy.hpp>
 
 //Generates procedural world based on height and width;
 void World::generate(int width, int height) {
@@ -68,7 +67,6 @@ float World::sumWorldLights(const std::vector<Light> &lights, glm::vec2 pos) {
 
 void World::generateWorldLightTexture() {
     //Width x Height must equal the flat stream of bytes
-    ZoneScoped;
     std::vector<std::uint8_t> stuff;
     glm::vec2 center = glm::vec2(this->width / 2, this->height / 2);
 
@@ -107,7 +105,6 @@ void World::generateWorldLightTexture() {
 }
 
 void World::updateWorldLightTexture(const Light &light) {
-    ZoneScoped;
     float ambient = 40.0f;
     //const int channel_size = 4;
     int diameter = (light.radius * 2);//we use RGBA 4 byte channel for textures, if this changes to be a singular byte or something, update this value and everything should still work

@@ -58,6 +58,6 @@ void Camera::updateCursorPos(int x, int y) {
 
 
 void Camera::updateCamSpeed(float dt) {
-    cameraSpeed = 2.0f;
+    cameraSpeed = 10.0f * dt;
 }
 
