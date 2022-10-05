@@ -27,7 +27,7 @@ file(GLOB SOURCES
 #        src/tracy/TracyClient.cpp
         )
 
-add_executable(AlphaEngineCMake ${SOURCES} src/renderers/SpriteRenderer.cpp src/renderers/SpriteRenderer.h src/Tile.cpp src/Tile.h src/World.cpp src/World.h src/renderers/WorldRenderer.cpp src/renderers/WorldRenderer.h src/renderers/QuadRenderer.cpp src/renderers/QuadRenderer.h src/SpatialMap.hpp src/renderers/FontRenderer.cpp src/renderers/FontRenderer.h src/utils/Timer.h)
+add_executable(AlphaEngineCMake ${SOURCES} src/Tile.cpp src/Tile.h src/World.cpp src/World.h src/renderers/QuadRenderer.cpp src/renderers/QuadRenderer.h src/SpatialMap.hpp src/renderers/FontRenderer.cpp src/renderers/FontRenderer.h src/utils/Timer.h src/utils/TileType.h src/NoiseGenerator.cpp src/NoiseGenerator.h)
 target_include_directories(AlphaEngineCMake PRIVATE ${STB_INCLUDE_DIRS})
 
 

@@ -14,7 +14,9 @@ void World::generate(int width, int height) {
 
     std::random_device dev;
     std::mt19937 rng(dev());
-    std::uniform_int_distribution<std::mt19937::result_type> dist6(1,3);
+    std::uniform_int_distribution<std::mt19937::result_type> dist6(0,255);
+
+
 
     //Create matrix for columns
     for(int i = 0; i < height; i++) {
@@ -22,7 +24,7 @@ void World::generate(int width, int height) {
             float rand = dist6(rng);
             glm::vec2 offset = glm::vec2(0.0f, 5.0f + rand);
             glm::vec2 position = glm::vec2(j, i);
-            tiles.emplace_back(Tile(offset, position,  8, 8));
+            tiles.emplace_back(Tile(offset, position,  8, 8, TileType::terrain));
         }
     }
 
@@ -36,15 +38,22 @@ void World::generateWorldTexture() {
     std::vector<std::uint8_t> stuff;
     stuff.reserve((this->width * this->height) * 4);
 
+
     for(auto iter : this->tiles){
         stuff.push_back(iter.position.x);
         stuff.push_back(iter.position.y);
+
+        if(iter.type == TileType::wall)
+        {
+            std::cout << "there is a wall" << std::endl;
+            //ComputeTileBitmask(this, iter);
+        }
+        //Determine offset now based on bitmap
         stuff.push_back(iter.offsetX);
         stuff.push_back(iter.offsetY);
     }
+
     Texture text;
-
-
 
     text.internal_format = GL_RGBA;
     text.image_format = GL_RGBA;
@@ -167,6 +176,7 @@ void World::addLight(Light light) {
     updateWorldLightTexture(light);
 }
 
-void World::addTile(Tile tile) {
-
+void World::placeTile(Tile tile) {
+    tiles[height * tile.position.y + tile.position.x] = tile;
+    generateWorldTexture();
 }

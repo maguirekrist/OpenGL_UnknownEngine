@@ -17,16 +17,29 @@ QuadRenderer::~QuadRenderer() {
 
 void QuadRenderer::initRenderData() {
     unsigned int VBO;
+//    float vertices[] = {
+//            // pos      // tex
+//            -1.0f, -1.0f,  //Bottom Left
+//            -1.0f, 1.0f,  //Top Left
+//            1.0f, -1.0f,  //Bottom Right
+//
+//            1.0f, 1.0f,  //Top Right
+//            -1.0f, 1.0f,   //Top Left
+//            1.0f, -1.0f,  //Bottom right
+//    };
+
     float vertices[] = {
             // pos      // tex
-            -1.0f, -1.0f,  //Bottom Left
-            -1.0f, 1.0f,  //Top Left
-            1.0f, -1.0f,  //Bottom Right
+            -1.0f, -1.0f, 0.0f, 0.0f,
+            -1.0f, 1.0f, 0.0f, 1.0f,
+            1.0f, -1.0f, 1.0f, 0.0f,
 
-            1.0f, 1.0f,  //Top Right
-            -1.0f, 1.0f,   //Top Left
-            1.0f, -1.0f,  //Bottom right
+            1.0f, 1.0f, 1.0f, 1.0f,
+            -1.0f, 1.0f, 0.0f, 1.0f,
+            1.0f, -1.0f, 1.0f, 0.0f
     };
+
+
 
     glGenVertexArrays(1, &this->quadVAO);
     glGenBuffers(1, &VBO);
@@ -37,7 +50,7 @@ void QuadRenderer::initRenderData() {
     glBindVertexArray(this->quadVAO);
 
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *) 0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *) 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -72,4 +85,18 @@ void QuadRenderer::drawWorld(const World& world, const Camera& camera) {
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
     //glDisable(GL_BLEND);
+}
+
+void QuadRenderer::drawQuad(const Texture& texture, const Camera& camera) {
+    this->shader.use();
+    this->shader.setInt("aTexture", 0);
+//    this->shader.setMat4("view", camera.view);
+
+    glActiveTexture(GL_TEXTURE0);
+    texture.bind();
+
+    glBindVertexArray(this->quadVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
+
 }

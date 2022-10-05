@@ -22,7 +22,7 @@ public:
 
     void initRenderData();
 
-    void drawQuad(Texture& texture, Texture& atlas, Texture& lightMap, Camera& camera);
+    void drawQuad(const Texture& texture, const Camera& camera);
     void drawWorld(const World& world, const Camera& camera);
 };
 

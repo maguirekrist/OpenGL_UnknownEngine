@@ -14,15 +14,41 @@
 #include "Shader.hpp"
 #include "Window.hpp"
 #include "ResourceManager.hpp"
-#include "Renderers/SpriteRenderer.h"
 #include "World.h"
-#include "Renderers/WorldRenderer.h"
 #include "Renderers/QuadRenderer.h"
 #include "renderers/FontRenderer.h"
 #include "utils/Timer.h"
+#include "NoiseGenerator.h"
 
 const int WINDOW_HEIGHT = 800;
 const int WINDOW_WIDTH = 800;
+
+static Texture generateRandomTestTexture(int width, int height)
+{
+    srand(time(NULL));
+
+    std::vector<int> map = NoiseGenerator::useDiamondSquare(width);
+
+    std::vector<std::uint8_t> stuff;
+    for(int iter : map) {
+        int value = std::clamp((iter / 8.0f) * 255, 0.0f, 255.0f);
+        stuff.push_back(value);
+        stuff.push_back(value);
+        stuff.push_back(value);
+        stuff.push_back(0xff);
+    }
+
+    std::cout << stuff.size() << std::endl;
+
+    Texture text;
+
+    text.image_format = GL_RGBA;
+    text.internal_format = GL_RGBA;
+
+    text.generate(width, height, stuff.data());
+    return text;
+}
+
 
 int main(int argc, const char * argv[]) {
     // insert code here...s
@@ -31,10 +57,9 @@ int main(int argc, const char * argv[]) {
     Window window(camera, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     //Load resources
-    ResourceManager::loadShader("../shaders/colors.vert", "../shaders/colors.frag", nullptr, "cube");
+    //ResourceManager::loadShader("../shaders/colors.vert", "../shaders/colors.frag", nullptr, "cube");
     ResourceManager::loadShader("../shaders/sprite.vert", "../shaders/sprite.frag", nullptr, "sprite");
     ResourceManager::loadShader("../shaders/world.vert", "../shaders/world.frag", nullptr, "world");
-    ResourceManager::loadShader("../shaders/simple.vert", "../shaders/simple.frag", nullptr, "simple");
     ResourceManager::loadShader("../shaders/font.vert", "../shaders/font.frag", nullptr, "font");
 
 
@@ -49,7 +74,8 @@ int main(int argc, const char * argv[]) {
 //    WorldRenderer* worldRenderer = new WorldRenderer(ResourceManager::getShader("world"));
 
     FontRenderer* fontRenderer = new FontRenderer(ResourceManager::getShader("font"));
-    QuadRenderer* testRenderer = new QuadRenderer(ResourceManager::getShader("simple"));
+    QuadRenderer* worldRenderer = new QuadRenderer(ResourceManager::getShader("world"));
+    QuadRenderer* testRenderer = new QuadRenderer(ResourceManager::getShader("sprite"));
 
     fontRenderer->loadFont("../resources/fonts/arial.ttf");
 
@@ -63,11 +89,16 @@ int main(int argc, const char * argv[]) {
 //    Texture lightMap = world.generateWorldLightTexture();
 //    Texture worldText = world.generateWorldTexture();
 
+    Texture testText = generateRandomTestTexture(513, 513);
+
     auto lambda = [&](glm::ivec2 pos, bool isLight = false){
         std::cout << "Light added" << std::endl;
-
-        world.addLight(Light(pos, 1.0f, 8));
+        if(isLight)
+            world.addLight(Light(pos, 1.0f, 8));
+        else
+            world.placeTile(Tile(glm::ivec2(5, 4), pos, 8, 8, TileType::terrain));
     };
+
 
     window.events.emplace_back(lambda);
 
@@ -100,7 +131,8 @@ int main(int argc, const char * argv[]) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-        testRenderer->drawWorld(world, camera);
+        //worldRenderer->drawWorld(world, camera);
+        testRenderer->drawQuad(testText, camera);
 
         std::ostringstream strs;
         strs << world.worldTime;
