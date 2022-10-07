@@ -69,10 +69,6 @@ int main(int argc, const char * argv[]) {
         texture.mag_filter = GL_LINEAR;
     });
 
-    //Initialize renderers
-//    SpriteRenderer* spriteRenderer = new SpriteRenderer(ResourceManager::getShader("sprite"));
-//    WorldRenderer* worldRenderer = new WorldRenderer(ResourceManager::getShader("world"));
-
     FontRenderer* fontRenderer = new FontRenderer(ResourceManager::getShader("font"));
     QuadRenderer* worldRenderer = new QuadRenderer(ResourceManager::getShader("world"));
     QuadRenderer* testRenderer = new QuadRenderer(ResourceManager::getShader("sprite"));
@@ -86,10 +82,7 @@ int main(int argc, const char * argv[]) {
     world.addLight(Light(glm::ivec2(32, 32), 1.0f, 12));
     world.addLight(Light(glm::ivec2(64, 64), 1.0f, 12));
 
-//    Texture lightMap = world.generateWorldLightTexture();
-//    Texture worldText = world.generateWorldTexture();
-
-    Texture testText = generateRandomTestTexture(513, 513);
+    Texture testText = generateRandomTestTexture(5, 5);
 
     auto lambda = [&](glm::ivec2 pos, bool isLight = false){
         std::cout << "Light added" << std::endl;
@@ -98,7 +91,6 @@ int main(int argc, const char * argv[]) {
         else
             world.placeTile(Tile(glm::ivec2(5, 4), pos, 8, 8, TileType::terrain));
     };
-
 
     window.events.emplace_back(lambda);
 
@@ -129,7 +121,6 @@ int main(int argc, const char * argv[]) {
         }
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 
         //worldRenderer->drawWorld(world, camera);
         testRenderer->drawQuad(testText, camera);
