@@ -23,31 +23,31 @@
 const int WINDOW_HEIGHT = 800;
 const int WINDOW_WIDTH = 800;
 
-static Texture generateRandomTestTexture(int width, int height)
-{
-    srand(time(NULL));
-
-    std::vector<int> map = NoiseGenerator::useDiamondSquare(width);
-
-    std::vector<std::uint8_t> stuff;
-    for(int iter : map) {
-        int value = std::clamp((iter / 8.0f) * 255, 0.0f, 255.0f);
-        stuff.push_back(value);
-        stuff.push_back(value);
-        stuff.push_back(value);
-        stuff.push_back(0xff);
-    }
-
-    std::cout << stuff.size() << std::endl;
-
-    Texture text;
-
-    text.image_format = GL_RGBA;
-    text.internal_format = GL_RGBA;
-
-    text.generate(width, height, stuff.data());
-    return text;
-}
+//static Texture generateRandomTestTexture(int width, int height)
+//{
+//    srand(time(NULL));
+//
+//    std::vector<int> map = NoiseGenerator::useDiamondSquare(width);
+//
+//    std::vector<std::uint8_t> stuff;
+//    for(int iter : map) {
+//        int value = std::clamp((iter / 16.0f) * 255, 0.0f, 255.0f);
+//        stuff.push_back(value);
+//        stuff.push_back(value);
+//        stuff.push_back(value);
+//        stuff.push_back(0xff);
+//    }
+//
+//    std::cout << stuff.size() << std::endl;
+//
+//    Texture text;
+//
+//    text.image_format = GL_RGBA;
+//    text.internal_format = GL_RGBA;
+//
+//    text.generate(width, height, stuff.data());
+//    return text;
+//}
 
 
 int main(int argc, const char * argv[]) {
@@ -75,14 +75,15 @@ int main(int argc, const char * argv[]) {
 
     fontRenderer->loadFont("../resources/fonts/arial.ttf");
 
-    World world(256, 256, ResourceManager::getTexture("container"), ResourceManager::getTexture("ambient"));
+    World world(256, 256,
+                ResourceManager::getTexture("container"),
+                ResourceManager::getTexture("ambient"),
+                std::make_unique<NoiseGenerator>());
 
     world.generate(256, 256);
 
     world.addLight(Light(glm::ivec2(32, 32), 1.0f, 12));
     world.addLight(Light(glm::ivec2(64, 64), 1.0f, 12));
-
-    Texture testText = generateRandomTestTexture(5, 5);
 
     auto lambda = [&](glm::ivec2 pos, bool isLight = false){
         std::cout << "Light added" << std::endl;
@@ -122,8 +123,8 @@ int main(int argc, const char * argv[]) {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        //worldRenderer->drawWorld(world, camera);
-        testRenderer->drawQuad(testText, camera);
+        worldRenderer->drawWorld(world, camera);
+        //testRenderer->drawQuad(testText, camera);
 
         std::ostringstream strs;
         strs << world.worldTime;
@@ -134,7 +135,6 @@ int main(int argc, const char * argv[]) {
     }
 
     ResourceManager::clear();
-
     glfwTerminate();
     return 0;
 }

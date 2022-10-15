@@ -7,10 +7,11 @@
 
 
 #include <vector>
+#include "INoiseGenerator.hpp"
 
-class NoiseGenerator {
+class NoiseGenerator : public INoiseGenerator {
 public:
-    static std::vector<int> useDiamondSquare(int dim);
+    std::vector<int> generate(int dim) override;
 };
 
 

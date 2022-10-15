@@ -16,7 +16,7 @@ void World::generate(int width, int height) {
     std::mt19937 rng(dev());
     std::uniform_int_distribution<std::mt19937::result_type> dist6(0,255);
 
-
+    this->heightMap = heightMapGenerator->generate(width+1);
 
     //Create matrix for columns
     for(int i = 0; i < height; i++) {
