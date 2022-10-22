@@ -7,6 +7,28 @@
 #include <random>
 #include <glm/geometric.hpp>
 
+
+const std::vector<glm::vec2> tileOffsets
+        {
+                { 0.0f, 6.0f},
+                { 0.0f, 0.0f },
+                { 0.0f, 1.0f }
+        };
+
+const int TILE_DIM = 8;
+
+static TileType compute_tile_type(int height_val)
+{
+    if(height_val < 4)
+    {
+        return TileType::Water;
+    } else if(height_val > 4 && height_val < 10) {
+        return TileType::Terrain;
+    } else {
+        return TileType::Mountain;
+    }
+}
+
 //Generates procedural world based on height and width;
 void World::generate(int width, int height) {
     this->width = width;
@@ -14,20 +36,18 @@ void World::generate(int width, int height) {
 
     std::random_device dev;
     std::mt19937 rng(dev());
-    std::uniform_int_distribution<std::mt19937::result_type> dist6(0,255);
+    std::uniform_int_distribution<std::mt19937::result_type> dist6(0,3);
 
     this->heightMap = heightMapGenerator->generate(width+1);
 
     //Create matrix for columns
     for(int i = 0; i < height; i++) {
         for(int j = 0; j < width; j++) {
-            float rand = dist6(rng);
-            glm::vec2 offset = glm::vec2(0.0f, 5.0f + rand);
             glm::vec2 position = glm::vec2(j, i);
-            tiles.emplace_back(Tile(offset, position,  8, 8, TileType::terrain));
+            TileType tileType = compute_tile_type(this->heightMap[i * height + j]);
+            tiles.emplace_back(Tile(tileOffsets[static_cast<int>(tileType)], position,  TILE_DIM, TILE_DIM, tileType));
         }
     }
-
 
     generateWorldTexture();
     generateWorldLightTexture();
@@ -43,14 +63,14 @@ void World::generateWorldTexture() {
         stuff.push_back(iter.position.x);
         stuff.push_back(iter.position.y);
 
-        if(iter.type == TileType::wall)
+        if(iter.type == TileType::Wall)
         {
             std::cout << "there is a wall" << std::endl;
             //ComputeTileBitmask(this, iter);
         }
         //Determine offset now based on bitmap
-        stuff.push_back(iter.offsetX);
-        stuff.push_back(iter.offsetY);
+        stuff.push_back(iter.offset.x);
+        stuff.push_back(iter.offset.y);
     }
 
     Texture text;

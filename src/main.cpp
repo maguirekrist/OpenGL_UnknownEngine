@@ -10,6 +10,7 @@
 #include <iostream>
 #include <glm/glm.hpp>
 #include <vector>
+#include <memory>
 #include "Camera.hpp"
 #include "Shader.hpp"
 #include "Window.hpp"
@@ -23,45 +24,46 @@
 const int WINDOW_HEIGHT = 800;
 const int WINDOW_WIDTH = 800;
 
-//static Texture generateRandomTestTexture(int width, int height)
-//{
-//    srand(time(NULL));
-//
-//    std::vector<int> map = NoiseGenerator::useDiamondSquare(width);
-//
-//    std::vector<std::uint8_t> stuff;
-//    for(int iter : map) {
-//        int value = std::clamp((iter / 16.0f) * 255, 0.0f, 255.0f);
-//        stuff.push_back(value);
-//        stuff.push_back(value);
-//        stuff.push_back(value);
-//        stuff.push_back(0xff);
-//    }
-//
-//    std::cout << stuff.size() << std::endl;
-//
-//    Texture text;
-//
-//    text.image_format = GL_RGBA;
-//    text.internal_format = GL_RGBA;
-//
-//    text.generate(width, height, stuff.data());
-//    return text;
-//}
+enum DebugView {
+    None,
+    HeightMap
+};
+
+static Texture get_height_map_texture(std::vector<int>& map)
+{
+    std::vector<std::uint8_t> stuff;
+    int mapSize = std::sqrt(map.size());
+    for(int iter : map) {
+        int value = std::clamp((iter / 16.0f) * 255, 0.0f, 255.0f);
+        stuff.push_back(value);
+        stuff.push_back(value);
+        stuff.push_back(value);
+        stuff.push_back(0xff);
+    }
+
+    Texture text;
+
+    text.image_format = GL_RGBA;
+    text.internal_format = GL_RGBA;
+
+    text.generate(mapSize, mapSize, stuff.data());
+    return text;
+}
 
 
 int main(int argc, const char * argv[]) {
-    // insert code here...s
+    DebugView debugView = DebugView::HeightMap;
 
     Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), WINDOW_WIDTH, WINDOW_HEIGHT);
     Window window(camera, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+
 
     //Load resources
     //ResourceManager::loadShader("../shaders/colors.vert", "../shaders/colors.frag", nullptr, "cube");
     ResourceManager::loadShader("../shaders/sprite.vert", "../shaders/sprite.frag", nullptr, "sprite");
     ResourceManager::loadShader("../shaders/world.vert", "../shaders/world.frag", nullptr, "world");
     ResourceManager::loadShader("../shaders/font.vert", "../shaders/font.frag", nullptr, "font");
-
 
     ResourceManager::loadTexture("../resources/jawbreaker_tiles.png", true, "container", std::nullopt);
     ResourceManager::loadTexture("../resources/ambient_gradient.png", true, "ambient", [](Texture& texture) {
@@ -90,10 +92,12 @@ int main(int argc, const char * argv[]) {
         if(isLight)
             world.addLight(Light(pos, 1.0f, 8));
         else
-            world.placeTile(Tile(glm::ivec2(5, 4), pos, 8, 8, TileType::terrain));
+            world.placeTile(Tile(glm::ivec2(5, 4), pos, 8, 8, TileType::Terrain));
     };
 
     window.events.emplace_back(lambda);
+
+    Texture testText = get_height_map_texture(world.heightMap);
 
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
     std::cout << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
@@ -123,8 +127,10 @@ int main(int argc, const char * argv[]) {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        worldRenderer->drawWorld(world, camera);
-        //testRenderer->drawQuad(testText, camera);
+        if(debugView == DebugView::None)
+            worldRenderer->drawWorld(world, camera);
+        if(debugView == DebugView::HeightMap)
+            testRenderer->drawQuad(testText, camera);
 
         std::ostringstream strs;
         strs << world.worldTime;

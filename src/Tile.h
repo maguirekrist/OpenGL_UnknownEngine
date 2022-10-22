@@ -11,22 +11,22 @@
 
 class Tile {
 public:
-    int offsetY, offsetX;
     int width, height;
-    TileType type = TileType::terrain;
+    TileType type;
 
     std::uint8_t bitmask = 0;
 
     glm::ivec2 position;
+    glm::ivec2 offset;
 
     Tile(glm::ivec2 offset, glm::ivec2 position, int width, int height, TileType type) :
-        offsetY(offset.y),
-        offsetX(offset.x),
+        offset(offset),
         position(position),
         width(width),
         height(height),
         type(type)
         {}
+
 };
 
 

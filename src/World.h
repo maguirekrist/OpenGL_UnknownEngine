@@ -9,6 +9,7 @@
 #include <vector>
 #include <unordered_map>
 #include <functional>
+#include <memory>
 #include "Tile.h"
 #include "Texture.hpp"
 #include "Light.hpp"
@@ -39,6 +40,7 @@ public:
     Texture lightMap;
     Texture ambient;
     Texture tileMap;
+
     Texture atlas;
 
     std::unique_ptr<INoiseGenerator> heightMapGenerator;
@@ -57,13 +59,14 @@ public:
     void generateWorldTexture();
     void generateWorldLightTexture();
     void tickWorldTime(double dt);
+
 private:
     double tickAccumulator;
 
     float sumWorldLights(std::vector<Light> const& lights, glm::vec2);
     void updateWorldLightTexture(const Light& light);
 
-friend std::uint8_t ComputeTileBitmask(const World* world, Tile& tile);
+friend std::uint8_t compute_tile_bitmask(const World* world, Tile& tile);
 };
 
 //std::uint8_t ComputeTileBitmask(const World* world, Tile& tile) {
