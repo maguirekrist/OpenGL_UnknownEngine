@@ -29,6 +29,15 @@ enum DebugView {
     HeightMap
 };
 
+static std::string get_debug_string(DebugView view)
+{
+    return (const char *[]) {
+            "bananas & monkeys",
+            "Round and orange",
+            "APPLE",
+    }[view];
+}
+
 static Texture get_height_map_texture(std::vector<int>& map)
 {
     std::vector<std::uint8_t> stuff;
@@ -57,8 +66,6 @@ int main(int argc, const char * argv[]) {
     Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), WINDOW_WIDTH, WINDOW_HEIGHT);
     Window window(camera, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-
-
     //Load resources
     //ResourceManager::loadShader("../shaders/colors.vert", "../shaders/colors.frag", nullptr, "cube");
     ResourceManager::loadShader("../shaders/sprite.vert", "../shaders/sprite.frag", nullptr, "sprite");
@@ -83,9 +90,6 @@ int main(int argc, const char * argv[]) {
                 std::make_unique<NoiseGenerator>());
 
     world.generate(256, 256);
-
-    world.addLight(Light(glm::ivec2(32, 32), 1.0f, 12));
-    world.addLight(Light(glm::ivec2(64, 64), 1.0f, 12));
 
     auto lambda = [&](glm::ivec2 pos, bool isLight = false){
         std::cout << "Light added" << std::endl;
@@ -127,6 +131,8 @@ int main(int argc, const char * argv[]) {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
+
         if(debugView == DebugView::None)
             worldRenderer->drawWorld(world, camera);
         if(debugView == DebugView::HeightMap)
@@ -134,7 +140,11 @@ int main(int argc, const char * argv[]) {
 
         std::ostringstream strs;
         strs << world.worldTime;
+
+        //Text GUI
         fontRenderer->renderText(strs.str(), camera, glm::vec2(0.0f, 0.0f), 1.0f, glm::vec3(0.5f, 0.8f, 0.2f));
+        fontRenderer->renderText(get_debug_string(debugView), camera, glm::vec2(0.0f, window.height), 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+
         window.update();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

@@ -106,6 +106,8 @@ void FontRenderer::renderText(std::string text, Camera& camera, glm::vec2 positi
         float xpos = position.x + ch.Bearing.x * scale;
         float ypos = position.y - (ch.Size.y - ch.Bearing.y) * scale;
 
+        if(position.y + ch.Size.y > )
+
         float w = ch.Size.x * scale;
         float h = ch.Size.y * scale;
         // update VBO for each character
@@ -118,6 +120,7 @@ void FontRenderer::renderText(std::string text, Camera& camera, glm::vec2 positi
                 { xpos + w, ypos,       1.0f, 1.0f },
                 { xpos + w, ypos + h,   1.0f, 0.0f }
         };
+
         // render glyph texture over quad
         glBindTexture(GL_TEXTURE_2D, ch.TextureID);
         // update content of VBO memory

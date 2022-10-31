@@ -112,6 +112,12 @@ void Window::processInput()
         camera.moveLeft();
     if (glfwGetKey(glfwWindow, GLFW_KEY_D) == GLFW_PRESS)
         camera.moveRight();
+
+    //Debug FKeys
+    if(glfwGetKey(glfwWindow, GLFW_KEY_F1) == GLFW_PRESS)
+    {
+
+    }
 }
 
 void Window::mouse_button_callback(GLFWwindow* p_window, int button, int action, int mods) {
