@@ -28,9 +28,10 @@ void main()
     //vec2 normPixel = ivec2(gl_FragCoord) % 16;
 
     bool isOutOfWorld = (worldPosition.x > mapSize.x || worldPosition.x < 0) || (worldPosition.y > mapSize.y || worldPosition.y < 0);
-
     vec2 inTilePosition = vec2(fract(worldPosition.x) * tileSize, fract(worldPosition.y) * tileSize);
     inTilePosition = vec2(inTilePosition.x / atlasSize.x, inTilePosition.y / atlasSize.y);
+
+
 
     float atlasOffsetX = tile.z * 255;
     float atlasOffsetY = tile.w * 255;

@@ -24,9 +24,6 @@ public:
     glm::vec2 cursorPos;
 
     float zoom = 1/32.0f;
-
-    int view_width;
-    int view_height;
     
     Camera(glm::vec3 defaultPos, int width, int height);
 

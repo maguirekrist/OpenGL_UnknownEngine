@@ -14,9 +14,6 @@ Camera::Camera(glm::vec3 defaultPos, int width, int height) {
     //view = glm::lookAt(cameraPos, glm::vec3(0, 0, 0), cameraUp);
     //projection = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f); //we may use projection later on, so keep this in mind
 
-
-    view_width = width;
-    view_height = height;
     view = glm::mat4(1.0f);
     projection = glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height), -1.0f, 1.0f);
 }
