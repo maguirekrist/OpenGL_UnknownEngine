@@ -15,7 +15,7 @@ const std::vector<glm::vec2> tileOffsets
                 { 0.0f, 1.0f }
         };
 
-const int TILE_DIM = 8;
+const int TILE_DIM = 1024;
 
 static TileType compute_tile_type(int height_val)
 {
@@ -55,22 +55,23 @@ void World::generate(int width, int height) {
 
 void World::generateWorldTexture() {
     //Width x Height must equal the flat stream of bytes
-    std::vector<std::uint8_t> stuff;
-    stuff.reserve((this->width * this->height) * 4);
+    std::vector<std::uint8_t> tileData;
+    tileData.reserve((this->width * this->height) * 4);
 
 
     for(auto iter : this->tiles){
-        stuff.push_back(iter.position.x);
-        stuff.push_back(iter.position.y);
+        tileData.push_back(iter.position.x);
+        tileData.push_back(iter.position.y);
 
         if(iter.type == TileType::Wall)
         {
             std::cout << "there is a wall" << std::endl;
             //ComputeTileBitmask(this, iter);
         }
+
         //Determine offset now based on bitmap
-        stuff.push_back(iter.offset.x);
-        stuff.push_back(iter.offset.y);
+        tileData.push_back(iter.offset.x);
+        tileData.push_back(iter.offset.y);
     }
 
     Texture text;
@@ -78,7 +79,7 @@ void World::generateWorldTexture() {
     text.internal_format = GL_RGBA;
     text.image_format = GL_RGBA;
 
-    text.generate(this->width, this->height, stuff.data());
+    text.generate(this->width, this->height, tileData.data());
     tileMap = text;
 }
 

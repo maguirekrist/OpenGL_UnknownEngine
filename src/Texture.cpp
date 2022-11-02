@@ -23,9 +23,12 @@ Texture::Texture() : internal_format(GL_RGB), image_format(GL_RGB), min_filter(G
     glGenTextures(1, &this->ID);
 }
 
-void Texture::generate(unsigned int width, unsigned int height, unsigned char *data) {
+void Texture::generate(unsigned int width, unsigned int height, unsigned char* data) {
     this->width = width;
     this->height = height;
+
+    this->data.resize(width * height);
+    memcpy(this->data.data(), data, width * height);
 
     glBindTexture(dimension, this->ID);
 

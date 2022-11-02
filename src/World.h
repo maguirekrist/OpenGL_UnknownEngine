@@ -15,6 +15,7 @@
 #include "Light.hpp"
 #include "SpatialMap.hpp"
 #include "INoiseGenerator.hpp"
+#include "TextureArray.hpp"
 
 //const int BUCKET_SIZE = 16;
 //
@@ -41,11 +42,11 @@ public:
     Texture ambient;
     Texture tileMap;
 
-    Texture atlas;
+    TextureArray atlas;
 
     std::unique_ptr<INoiseGenerator> heightMapGenerator;
 
-    World(int width, int height, Texture atlas, Texture ambient, std::unique_ptr<INoiseGenerator>&& generator) :
+    World(int width, int height, TextureArray atlas, Texture ambient, std::unique_ptr<INoiseGenerator>&& generator) :
         width(width),
         height(height),
         spatialMap{(size_t)width/16, 16},
@@ -59,7 +60,6 @@ public:
     void generateWorldTexture();
     void generateWorldLightTexture();
     void tickWorldTime(double dt);
-
 private:
     double tickAccumulator;
 

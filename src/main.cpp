@@ -20,6 +20,7 @@
 #include "renderers/FontRenderer.h"
 #include "utils/Timer.h"
 #include "NoiseGenerator.h"
+#include "TextureArray.hpp"
 
 const int WINDOW_HEIGHT = 800;
 const int WINDOW_WIDTH = 800;
@@ -65,11 +66,21 @@ int main(int argc, const char * argv[]) {
     ResourceManager::loadShader("../shaders/world.vert", "../shaders/world.frag", nullptr, "world");
     ResourceManager::loadShader("../shaders/font.vert", "../shaders/font.frag", nullptr, "font");
 
-    ResourceManager::loadTexture("../resources/jawbreaker_tiles.png", true, "container", std::nullopt);
+
+
+    ResourceManager::loadTexture("../resources/jawbreaker_tiles.png", true, "tileset", std::nullopt);
     ResourceManager::loadTexture("../resources/ambient_gradient.png", true, "ambient", [](Texture& texture) {
         texture.dimension = GL_TEXTURE_1D;
         texture.mag_filter = GL_LINEAR;
     });
+
+    ResourceManager::loadTexture("../resources/tiles/Soil.psd", true, "soil", std::nullopt);
+    ResourceManager::loadTexture("../resources/tiles/SoftSand.psd", true, "sand", std::nullopt);
+
+    TextureArray textureArray(GL_TEXTURE_2D_ARRAY);
+    textureArray.insertTexture(&ResourceManager::getTexture("soil"));
+    textureArray.insertTexture(&ResourceManager::getTexture("sand"));
+    textureArray.generate();
 
     FontRenderer* fontRenderer = new FontRenderer(ResourceManager::getShader("font"));
     QuadRenderer* worldRenderer = new QuadRenderer(ResourceManager::getShader("world"));
@@ -78,7 +89,7 @@ int main(int argc, const char * argv[]) {
     fontRenderer->loadFont("../resources/fonts/arial.ttf");
 
     World world(256, 256,
-                ResourceManager::getTexture("container"),
+                textureArray,
                 ResourceManager::getTexture("ambient"),
                 std::make_unique<NoiseGenerator>());
 

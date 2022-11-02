@@ -3,10 +3,15 @@
 #include <GL/glew.h>
 #include <stdio.h>
 #include <iostream>
+#include <vector>
 
 
 class  Texture
 {
+protected:
+    Texture(int dimension) :  internal_format(GL_RGB), image_format(GL_RGB), min_filter(GL_LINEAR), mag_filter(GL_NEAREST), dimension(dimension) {
+        glGenTextures(1, &this->ID);
+    }
 public:
 	Texture();
 	
@@ -24,6 +29,9 @@ public:
 	int width;
 	int nrChannels;
 
+    std::vector<std::byte> data;
+
+    //Make virtual so composite objects can utilize this
     void generate(unsigned int width, unsigned int height, unsigned char* data);
 
 	//const member function cannot change member variables without compile errors
