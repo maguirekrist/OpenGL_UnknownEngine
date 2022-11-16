@@ -56,22 +56,23 @@ void QuadRenderer::initRenderData() {
     glBindVertexArray(0);
 }
 
-void QuadRenderer::drawWorld(const World& world, const Camera& camera) {
+void QuadRenderer::drawWorld(const World& world, const Camera& camera, DebugView& debugView) {
     this->shader.use();
 
 
     this->shader.setMat4("view", camera.view);
-    this->shader.setInt("aTexture", 0);
+    this->shader.setInt("tileMap", 0);
     this->shader.setInt("atlas", 1);
     this->shader.setInt("lightMap", 2);
     this->shader.setInt("ambient", 3);
     this->shader.setFloat("worldTime", world.worldTime);
+    this->shader.setInt("heightMapView", debugView == DebugView::HeightMap ? 1 : 0);
 
     glActiveTexture(GL_TEXTURE0);
     world.tileMap.bind();
 
     glActiveTexture(GL_TEXTURE1);
-    world.atlas.bind();
+    glBindTexture(GL_TEXTURE_2D_ARRAY, world.atlas.ID);
 
     glActiveTexture(GL_TEXTURE2);
     world.lightMap.bind();

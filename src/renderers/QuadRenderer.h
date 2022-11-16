@@ -23,7 +23,7 @@ public:
     void initRenderData();
 
     void drawQuad(const Texture& texture, const Camera& camera);
-    void drawWorld(const World& world, const Camera& camera);
+    void drawWorld(const World& world, const Camera& camera, DebugView& debugView);
 };
 
 

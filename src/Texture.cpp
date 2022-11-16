@@ -18,7 +18,7 @@
 //    return true;
 //}
 
-Texture::Texture() : internal_format(GL_RGB), image_format(GL_RGB), min_filter(GL_LINEAR), mag_filter(GL_NEAREST), dimension(GL_TEXTURE_2D)
+Texture::Texture() : internal_format(GL_RGB), image_format(GL_RGB), min_filter(GL_LINEAR), mag_filter(GL_NEAREST), dimension(GL_TEXTURE_2D), nrChannels(3)
 {
     glGenTextures(1, &this->ID);
 }
@@ -27,8 +27,8 @@ void Texture::generate(unsigned int width, unsigned int height, unsigned char* d
     this->width = width;
     this->height = height;
 
-    this->data.resize(width * height);
-    memcpy(this->data.data(), data, width * height);
+    this->data.resize(width * height * nrChannels);
+    memcpy(this->data.data(), data, width * height * nrChannels);
 
     glBindTexture(dimension, this->ID);
 

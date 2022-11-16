@@ -4,7 +4,6 @@
 //
 //  Created by Maguire Krist on 4/16/22.
 //
-
 #include <array>
 #include <GL/glew.h>
 #include <iostream>
@@ -20,15 +19,10 @@
 #include "renderers/FontRenderer.h"
 #include "utils/Timer.h"
 #include "NoiseGenerator.h"
-#include "TextureArray.hpp"
+#include "ArrayTexture.hpp"
 
 const int WINDOW_HEIGHT = 800;
 const int WINDOW_WIDTH = 800;
-
-enum DebugView {
-    None,
-    HeightMap
-};
 
 static Texture get_height_map_texture(std::vector<int>& map)
 {
@@ -53,12 +47,8 @@ static Texture get_height_map_texture(std::vector<int>& map)
 
 
 int main(int argc, const char * argv[]) {
-    DebugView debugView = DebugView::None;
-
     Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), WINDOW_WIDTH, WINDOW_HEIGHT);
     Window window(camera, WINDOW_WIDTH, WINDOW_HEIGHT);
-
-
 
     //Load resources
     //ResourceManager::loadShader("../shaders/colors.vert", "../shaders/colors.frag", nullptr, "cube");
@@ -66,21 +56,11 @@ int main(int argc, const char * argv[]) {
     ResourceManager::loadShader("../shaders/world.vert", "../shaders/world.frag", nullptr, "world");
     ResourceManager::loadShader("../shaders/font.vert", "../shaders/font.frag", nullptr, "font");
 
-
-
     ResourceManager::loadTexture("../resources/jawbreaker_tiles.png", true, "tileset", std::nullopt);
     ResourceManager::loadTexture("../resources/ambient_gradient.png", true, "ambient", [](Texture& texture) {
         texture.dimension = GL_TEXTURE_1D;
         texture.mag_filter = GL_LINEAR;
     });
-
-    ResourceManager::loadTexture("../resources/tiles/Soil.psd", true, "soil", std::nullopt);
-    ResourceManager::loadTexture("../resources/tiles/SoftSand.psd", true, "sand", std::nullopt);
-
-    TextureArray textureArray(GL_TEXTURE_2D_ARRAY);
-    textureArray.insertTexture(&ResourceManager::getTexture("soil"));
-    textureArray.insertTexture(&ResourceManager::getTexture("sand"));
-    textureArray.generate();
 
     FontRenderer* fontRenderer = new FontRenderer(ResourceManager::getShader("font"));
     QuadRenderer* worldRenderer = new QuadRenderer(ResourceManager::getShader("world"));
@@ -88,27 +68,25 @@ int main(int argc, const char * argv[]) {
 
     fontRenderer->loadFont("../resources/fonts/arial.ttf");
 
-    World world(256, 256,
-                textureArray,
+    World world(512, 512,
+                16,
                 ResourceManager::getTexture("ambient"),
                 std::make_unique<NoiseGenerator>());
-
-    world.generate(256, 256);
 
     world.addLight(Light(glm::ivec2(32, 32), 1.0f, 12));
     world.addLight(Light(glm::ivec2(64, 64), 1.0f, 12));
 
+    Texture testText = get_height_map_texture(world.heightMap);
+
+
     auto lambda = [&](glm::ivec2 pos, bool isLight = false){
-        std::cout << "Light added" << std::endl;
         if(isLight)
             world.addLight(Light(pos, 1.0f, 8));
         else
-            world.placeTile(Tile(glm::ivec2(5, 4), pos, 8, 8, TileType::Terrain));
+            world.placeTile(Tile(0, glm::tvec3<int>(pos.x, pos.y, 0), 16, 16, TileType::Terrain));
     };
 
     window.events.emplace_back(lambda);
-
-    Texture testText = get_height_map_texture(world.heightMap);
 
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
     std::cout << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
@@ -124,6 +102,7 @@ int main(int argc, const char * argv[]) {
         double dt = timer.Elapsed_s(); // dt is the amount of time that has elapsed in seconds from the reset
         timer.Reset();
         simulationAccum += dt;
+
         while(simulationAccum > simulationTick)
         {
             window.processInput();
@@ -135,12 +114,13 @@ int main(int argc, const char * argv[]) {
 
             simulationAccum -= ( simulationTick / timeAccel);
         }
+
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        if(debugView == DebugView::None)
-            worldRenderer->drawWorld(world, camera);
-        if(debugView == DebugView::HeightMap)
+        if(window.debugView != DebugView::HeightMapTexture)
+            worldRenderer->drawWorld(world, camera, window.debugView);
+        if(window.debugView == DebugView::HeightMapTexture)
             testRenderer->drawQuad(testText, camera);
 
         std::ostringstream strs;

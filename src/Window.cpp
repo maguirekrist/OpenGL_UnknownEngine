@@ -112,6 +112,16 @@ void Window::processInput()
         camera.moveLeft();
     if (glfwGetKey(glfwWindow, GLFW_KEY_D) == GLFW_PRESS)
         camera.moveRight();
+
+    //Debug Views
+    if(glfwGetKey(glfwWindow, GLFW_KEY_F1) == GLFW_PRESS)
+        debugView = DebugView::None;
+
+    if(glfwGetKey(glfwWindow, GLFW_KEY_F2) == GLFW_PRESS)
+        debugView = DebugView::HeightMap;
+
+    if(glfwGetKey(glfwWindow, GLFW_KEY_F3) == GLFW_PRESS)
+        debugView = DebugView::HeightMapTexture;
 }
 
 void Window::mouse_button_callback(GLFWwindow* p_window, int button, int action, int mods) {
@@ -163,10 +173,10 @@ void Window::scroll_callback(GLFWwindow *p_window, double xoffset, double yoffse
     centerY = (window->height / 2 ) * window->camera.zoom;
 
     // std::cout << "CamPos: " << window->camera.cameraPos.x << " & " << window->camera.cameraPos.y << std::endl;
-
     glm::vec2 camCenter = glm::vec2(window->camera.cameraPos.x + centerX, window->camera.cameraPos.y + centerY);
 
-    window->camera.zoom += (yoffset / std::abs(yoffset))* 0.005f;
+    if(yoffset != 0)
+        window->camera.zoom += (yoffset / std::abs(yoffset)) * 0.005f;
 
     centerX = (window->width / 2 ) * window->camera.zoom;
     centerY = (window->height / 2 ) * window->camera.zoom;

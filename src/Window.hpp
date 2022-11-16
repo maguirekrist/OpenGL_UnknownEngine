@@ -16,12 +16,19 @@
 #include <GLFW/glfw3.h>
 #include <functional>
 
+enum DebugView {
+    None,
+    HeightMap,
+    HeightMapTexture
+};
+
 class Window {
 public: 
     Window(Camera& camera, int width, int height);
     ~Window();
 
     Camera& camera;
+    DebugView debugView = DebugView::None;
 
     std::vector<std::function<void(glm::vec2, bool)>> events;
 

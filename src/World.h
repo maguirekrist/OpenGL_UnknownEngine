@@ -15,7 +15,7 @@
 #include "Light.hpp"
 #include "SpatialMap.hpp"
 #include "INoiseGenerator.hpp"
-#include "TextureArray.hpp"
+#include "ArrayTexture.hpp"
 
 //const int BUCKET_SIZE = 16;
 //
@@ -32,29 +32,24 @@
 class World {
 public:
     int width = 256, height = 256;
+    int tileSize = 16;
     double worldTime;
     std::vector<Tile> tiles;
     SpatialMap<Light> spatialMap;
     std::vector<std::uint8_t> lightMapImage;
     std::vector<int> heightMap;
 
+
     Texture lightMap;
     Texture ambient;
     Texture tileMap;
-
-    TextureArray atlas;
+    ArrayTexture atlas;
 
     std::unique_ptr<INoiseGenerator> heightMapGenerator;
 
-    World(int width, int height, TextureArray atlas, Texture ambient, std::unique_ptr<INoiseGenerator>&& generator) :
-        width(width),
-        height(height),
-        spatialMap{(size_t)width/16, 16},
-        atlas(atlas),
-        ambient(ambient),
-        heightMapGenerator(std::move(generator)) {}
+    World(int width, int height, int tileSize, Texture& ambient, std::unique_ptr<INoiseGenerator>&& generator);
 
-    void generate(int width, int height);
+    void generate();
     void addLight(Light light);
     void placeTile(Tile tile);
     void generateWorldTexture();
@@ -62,11 +57,12 @@ public:
     void tickWorldTime(double dt);
 private:
     double tickAccumulator;
+    std::unordered_map<TileType, std::pair<std::string, int>, EnumClassHash> tileOffsetMap;
 
     float sumWorldLights(std::vector<Light> const& lights, glm::vec2);
     void updateWorldLightTexture(const Light& light);
 
-friend std::uint8_t compute_tile_bitmask(const World* world, Tile& tile);
+//friend std::uint8_t compute_tile_bitmask(const World* world, Tile& tile);
 };
 
 //std::uint8_t ComputeTileBitmask(const World* world, Tile& tile) {

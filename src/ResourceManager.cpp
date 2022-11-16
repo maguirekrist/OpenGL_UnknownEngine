@@ -92,7 +92,7 @@ void ResourceManager::loadTexture(const char *file, bool alpha, std::string name
     unsigned char* data = stbi_load(file, &width, &height, &nrChannels, 0);
     if (data) {
         std::cout << "Loaded file " << file << " successfully. width: " << width << ", height: " << height << std::endl;
-
+        texture.nrChannels = nrChannels;
         texture.generate(width, height, data);
     }
     else {

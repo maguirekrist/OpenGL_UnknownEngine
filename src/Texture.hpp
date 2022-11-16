@@ -9,7 +9,7 @@
 class  Texture
 {
 protected:
-    Texture(int dimension) :  internal_format(GL_RGB), image_format(GL_RGB), min_filter(GL_LINEAR), mag_filter(GL_NEAREST), dimension(dimension) {
+    Texture(int dimension) :  internal_format(GL_RGBA), image_format(GL_RGBA), min_filter(GL_LINEAR), mag_filter(GL_NEAREST), dimension(dimension), nrChannels(4) {
         glGenTextures(1, &this->ID);
     }
 public:
@@ -29,7 +29,7 @@ public:
 	int width;
 	int nrChannels;
 
-    std::vector<std::byte> data;
+    std::vector<std::uint8_t> data;
 
     //Make virtual so composite objects can utilize this
     void generate(unsigned int width, unsigned int height, unsigned char* data);

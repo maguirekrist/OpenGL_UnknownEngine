@@ -7,6 +7,7 @@
 
 
 #include <glm/vec2.hpp>
+#include <glm/detail/type_vec3.hpp>
 #include "utils/TileType.h"
 
 class Tile {
@@ -16,10 +17,11 @@ public:
 
     std::uint8_t bitmask = 0;
 
-    glm::ivec2 position;
-    glm::ivec2 offset;
+    glm::tvec3<int> position; //x, y, then z representing tile height in the heightMap
 
-    Tile(glm::ivec2 offset, glm::ivec2 position, int width, int height, TileType type) :
+    int offset;
+
+    Tile(int offset, glm::tvec3<int> position, int width, int height, TileType type) :
         offset(offset),
         position(position),
         width(width),

@@ -5,12 +5,14 @@
 #include <random>
 #include <iostream>
 #include "NoiseGenerator.h"
+#include "utils/Random.h"
 
 //Precondition: Chunk size should be a area value
 static void ds_generate(std::vector<int>& map, int count) {
+    float magnitude_multiplier = std::pow(2, -(0.5 * count));
+
     std::random_device dev;
     std::mt19937 rng(dev());
-    float magnitude_multiplier = std::pow(2, -(0.5 * count));
     std::uniform_int_distribution<int> dist6(-7 * magnitude_multiplier,7 * magnitude_multiplier);
 
     int mapSize = std::sqrt(map.size());
@@ -101,14 +103,11 @@ static void ds_generate(std::vector<int>& map, int count) {
 
 std::vector<int> NoiseGenerator::generate(int dim) {
     std::vector<int> heightMap(dim * dim, -999);
-    std::random_device dev;
-    std::mt19937 rng(dev());
-    std::uniform_int_distribution<std::mt19937::result_type> dist6(1,10);
     //Step 1, initialize the corners
-    float topLeft = dist6(rng);
-    float topRight = dist6(rng);
-    float bottomLeft = dist6(rng);
-    float bottomRight = dist6(rng);
+    auto topLeft = Random::generate(1, 10);
+    auto topRight = Random::generate(1, 10);
+    auto bottomLeft = Random::generate(1, 10);
+    auto bottomRight = Random::generate(1, 10);
 
 
     heightMap[(0 * dim) + 0] = bottomLeft; //bottomLeft
