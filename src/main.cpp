@@ -10,16 +10,16 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include <memory>
-#include "Camera.hpp"
-#include "Shader.hpp"
-#include "Window.hpp"
-#include "ResourceManager.hpp"
-#include "World.h"
+#include "scene/Camera.h"
+#include "graphics/Shader.h"
+#include "scene/Window.h"
+#include "infrastructure/ResourceManager.h"
+#include "scene/World.h"
 #include "Renderers/QuadRenderer.h"
 #include "renderers/FontRenderer.h"
 #include "utils/Timer.h"
-#include "NoiseGenerator.h"
-#include "ArrayTexture.hpp"
+#include "generation/NoiseGenerator.h"
+#include "graphics/ArrayTexture.h"
 
 const int WINDOW_HEIGHT = 800;
 const int WINDOW_WIDTH = 800;

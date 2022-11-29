@@ -5,7 +5,7 @@
 #include <iostream>
 #include <gl/glew.h>
 #include "FontRenderer.h"
-#include "Camera.hpp"
+#include "../scene/Camera.h"
 
 FontRenderer::FontRenderer(Shader& shader) : shader(shader) {
     //initialize free type library

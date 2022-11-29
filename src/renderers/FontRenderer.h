@@ -9,8 +9,8 @@
 #include <glm/ext/vector_int2.hpp>
 #include <map>
 #include FT_FREETYPE_H
-#include "Shader.hpp"
-#include "Camera.hpp"
+#include "../graphics/Shader.h"
+#include "../scene/Camera.h"
 
 struct Character {
     unsigned int TextureID;

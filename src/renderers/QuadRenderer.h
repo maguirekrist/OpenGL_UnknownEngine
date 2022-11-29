@@ -6,11 +6,12 @@
 #define ALPHAENGINECMAKE_QUADRENDERER_H
 
 
-#include "Texture.hpp"
-#include "Shader.hpp"
-#include "Camera.hpp"
-#include "Window.hpp"
-#include "World.h"
+#include "../graphics/Shader.h"
+#include "../graphics/Texture.h"
+#include "../scene/World.h"
+#include "../scene/Camera.h"
+#include "../scene/Window.h"
+
 
 class QuadRenderer {
 public:

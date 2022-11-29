@@ -3,8 +3,6 @@
 //
 
 #include "QuadRenderer.h"
-#include "Window.hpp"
-#include "World.h"
 
 QuadRenderer::QuadRenderer(Shader& shader) {
     this->shader = shader;
@@ -17,16 +15,6 @@ QuadRenderer::~QuadRenderer() {
 
 void QuadRenderer::initRenderData() {
     unsigned int VBO;
-//    float vertices[] = {
-//            // pos      // tex
-//            -1.0f, -1.0f,  //Bottom Left
-//            -1.0f, 1.0f,  //Top Left
-//            1.0f, -1.0f,  //Bottom Right
-//
-//            1.0f, 1.0f,  //Top Right
-//            -1.0f, 1.0f,   //Top Left
-//            1.0f, -1.0f,  //Bottom right
-//    };
 
     float vertices[] = {
             // pos      // tex
@@ -67,6 +55,7 @@ void QuadRenderer::drawWorld(const World& world, const Camera& camera, DebugView
     this->shader.setInt("ambient", 3);
     this->shader.setFloat("worldTime", world.worldTime);
     this->shader.setInt("heightMapView", debugView == DebugView::HeightMap ? 1 : 0);
+    this->shader.setVec3("selectTile", glm::vec3(camera.cursorPos, 1.0f));
 
     glActiveTexture(GL_TEXTURE0);
     world.tileMap.bind();
@@ -80,7 +69,7 @@ void QuadRenderer::drawWorld(const World& world, const Camera& camera, DebugView
     glActiveTexture(GL_TEXTURE3);
     world.ambient.bind();
 //    glEnable(GL_BLEND);
-//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);
+//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glBindVertexArray(this->quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);

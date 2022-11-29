@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.22)
 project(AlphaEngineCMake)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -14,21 +14,71 @@ find_path(STB_INCLUDE_DIRS "stb_c_lexer.h")
 #option(TRACY_ON_DEMAND "" ON)
 
 #add_subdirectory(src/tracy)
+#
+#include_directories(
+#        ${PROJECT_SOURCE_DIR}/src
+##        ${PROJECT_SOURCE_DIR}/src/tracy
+#    )
 
-include_directories(
-        ${PROJECT_SOURCE_DIR}/src
-#        ${PROJECT_SOURCE_DIR}/src/tracy
-    )
+#
+#file(GLOB SOURCES
+#        src/*.cpp
+#        src/*.hpp
+#        src/renderers/*.cpp
+#        src/renderers/*.hpp
+#        src/utils/*.cpp
+#        src/utils/*.hpp
+#        src/generation/*.cpp
+#        src/generation/*.hpp
+#        src/infrastructure/*.cpp
+#        src/infrastructure/*.hpp
+#        src/renderers/*.cpp
+#        src/renderers/*.hpp
+#        src/scene/*.cpp
+#        src/scene/*.hpp
+##        src/tracy/TracyClient.cpp
+#        )
 
-
-file(GLOB SOURCES
-        src/*.cpp
-        src/*.hpp
-#        src/tracy/TracyClient.cpp
+set(source_files
+        src/main.cpp
+        src/renderers/FontRenderer.cpp
+        src/renderers/QuadRenderer.cpp
+        src/generation/INoiseGenerator.cpp
+        src/generation/NoiseGenerator.cpp
+        src/graphics/ArrayTexture.cpp
+        src/graphics/Shader.cpp
+        src/graphics/Texture.cpp
+        src/infrastructure/ResourceManager.cpp
+        src/scene/Window.cpp
+        src/scene/World.cpp
+        src/scene/Camera.cpp
+        src/scene/Light.cpp
+        src/scene/Tile.cpp
+        src/utils/Random.cpp
         )
 
-add_executable(AlphaEngineCMake ${SOURCES} src/Tile.cpp src/Tile.h src/World.cpp src/World.h src/renderers/QuadRenderer.cpp src/renderers/QuadRenderer.h src/SpatialMap.hpp src/renderers/FontRenderer.cpp src/renderers/FontRenderer.h src/utils/Timer.h src/utils/TileType.h src/NoiseGenerator.cpp src/NoiseGenerator.h src/INoiseGenerator.cpp src/INoiseGenerator.hpp src/ArrayTexture.cpp src/ArrayTexture.hpp src/utils/Random.cpp src/utils/Random.h)
-target_include_directories(AlphaEngineCMake PRIVATE ${STB_INCLUDE_DIRS})
+set(header_files
+        src/renderers/FontRenderer.h
+        src/renderers/QuadRenderer.h
+        src/generation/INoiseGenerator.h
+        src/generation/NoiseGenerator.h
+        src/scene/Window.h
+        src/scene/Camera.h
+        src/scene/Light.h
+        src/scene/World.h
+        src/scene/Tile.h
+        src/graphics/Shader.h
+        src/graphics/ArrayTexture.h
+        src/graphics/Texture.h
+        src/infrastructure/ResourceManager.h
+        src/utils/SpatialMap.hpp
+        src/utils/Types.hpp
+        src/utils/Random.h
+        src/utils/TileType.h
+        src/utils/Timer.h)
+
+add_executable(${PROJECT_NAME} ${source_files} ${header_files})
+target_include_directories(${PROJECT_NAME} PRIVATE ${STB_INCLUDE_DIRS})
 
 
 
@@ -38,8 +88,8 @@ if(MSVC)
 endif()
 
 #target_link_libraries(AlphaEngineCMake PUBLIC Tracy::TracyClient)
-target_link_libraries(AlphaEngineCMake PRIVATE OpenGL::GL)
-target_link_libraries(AlphaEngineCMake PRIVATE glm::glm)
-target_link_libraries(AlphaEngineCMake PRIVATE GLEW::GLEW)
-target_link_libraries(AlphaEngineCMake PRIVATE glfw)
-target_link_libraries(AlphaEngineCMake PRIVATE freetype)
+target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)
+target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
+target_link_libraries(${PROJECT_NAME} PRIVATE GLEW::GLEW)
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
+target_link_libraries(${PROJECT_NAME} PRIVATE freetype)
