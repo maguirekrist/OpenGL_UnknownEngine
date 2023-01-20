@@ -15,11 +15,12 @@
 #include "scene/Window.h"
 #include "infrastructure/ResourceManager.h"
 #include "scene/World.h"
-#include "Renderers/QuadRenderer.h"
 #include "renderers/FontRenderer.h"
 #include "utils/Timer.h"
 #include "generation/NoiseGenerator.h"
 #include "graphics/ArrayTexture.h"
+#include "renderers/WorldRenderer.h"
+#include "renderers/EntityRenderer.h"
 
 const int WINDOW_HEIGHT = 800;
 const int WINDOW_WIDTH = 800;
@@ -50,11 +51,15 @@ int main(int argc, const char * argv[]) {
     Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), WINDOW_WIDTH, WINDOW_HEIGHT);
     Window window(camera, WINDOW_WIDTH, WINDOW_HEIGHT);
 
+    std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
+    std::cout << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+
     //Load resources
     //ResourceManager::loadShader("../shaders/colors.vert", "../shaders/colors.frag", nullptr, "cube");
-    ResourceManager::loadShader("../shaders/sprite.vert", "../shaders/sprite.frag", nullptr, "sprite");
+    //ResourceManager::loadShader("../shaders/sprite.vert", "../shaders/sprite.frag", nullptr, "sprite");
     ResourceManager::loadShader("../shaders/world.vert", "../shaders/world.frag", nullptr, "world");
     ResourceManager::loadShader("../shaders/font.vert", "../shaders/font.frag", nullptr, "font");
+
 
     ResourceManager::loadTexture("../resources/jawbreaker_tiles.png", true, "tileset", std::nullopt);
     ResourceManager::loadTexture("../resources/ambient_gradient.png", true, "ambient", [](Texture& texture) {
@@ -63,8 +68,8 @@ int main(int argc, const char * argv[]) {
     });
 
     FontRenderer* fontRenderer = new FontRenderer(ResourceManager::getShader("font"));
-    QuadRenderer* worldRenderer = new QuadRenderer(ResourceManager::getShader("world"));
-    QuadRenderer* testRenderer = new QuadRenderer(ResourceManager::getShader("sprite"));
+    WorldRenderer* worldRenderer = new WorldRenderer(ResourceManager::getShader("world"));
+    EntityRenderer* entityRenderer = new EntityRenderer(ResourceManager::getShader("sprite"));
 
     fontRenderer->loadFont("../resources/fonts/arial.ttf");
 
@@ -78,18 +83,14 @@ int main(int argc, const char * argv[]) {
 
     Texture testText = get_height_map_texture(world.heightMap);
 
+    //std::unique_ptr<Command> placeCommand = std::make_unique<Command>(TileType::Water, world);
 
-    auto lambda = [&](glm::ivec2 pos, bool isLight = false){
-        if(isLight)
-            world.addLight(Light(pos, 1.0f, 8));
-        else
-            world.placeTile(Tile(0, glm::tvec3<int>(pos.x, pos.y, 0), 16, 16, TileType::Terrain));
-    };
+    //window.setPlaceCommand(std::move(placeCommand));
 
-    window.events.emplace_back(lambda);
+    std::vector<Entity> entities;
+    
+    entities.push_back(Entity(glm::vec2(5.0f, 5.0f)));
 
-    std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
-    std::cout << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
     double simulationAccum = 0;
     const double simulationTick = 1.0 / 60.0;
@@ -120,8 +121,6 @@ int main(int argc, const char * argv[]) {
 
         if(window.debugView != DebugView::HeightMapTexture)
             worldRenderer->drawWorld(world, camera, window.debugView);
-        if(window.debugView == DebugView::HeightMapTexture)
-            testRenderer->drawQuad(testText, camera);
 
         std::ostringstream strs;
         strs << world.worldTime;

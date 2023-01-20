@@ -19,10 +19,7 @@ public:
 
     glm::tvec3<int> position; //x, y, then z representing tile height in the heightMap
 
-    int offset;
-
-    Tile(int offset, glm::tvec3<int> position, int width, int height, TileType type) :
-        offset(offset),
+    Tile(glm::tvec3<int> position, int width, int height, TileType type) :
         position(position),
         width(width),
         height(height),

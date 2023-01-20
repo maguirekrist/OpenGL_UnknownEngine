@@ -16,6 +16,8 @@
 #include <functional>
 #include <iostream>
 #include <cstring>
+#include <memory>
+#include "../Command.h"
 
 enum DebugView {
     None,
@@ -30,8 +32,8 @@ public:
 
     Camera& camera;
     DebugView debugView = DebugView::None;
+    std::unique_ptr<Command> clickCommand;
 
-    std::vector<std::function<void(glm::vec2, bool)>> events;
 
     int height;
     int width;
@@ -40,7 +42,8 @@ public:
     void processInput();
     void update();
     bool isOpen();
-
+    void setPlaceCommand(std::unique_ptr<Command>&& command);
+   
 
 private:
     GLFWwindow* glfwWindow;

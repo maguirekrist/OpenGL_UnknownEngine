@@ -1,0 +1,11 @@
+[requires]
+freetype/2.12.1
+glm/cci.20220420
+glfw/3.3.8
+glew/2.2.0
+
+[imports]
+bin, *.dll -> ./app
+
+[generators]
+cmake

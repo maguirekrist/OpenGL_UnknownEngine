@@ -13,3 +13,4 @@ typedef struct
     glm::vec3 min;
     glm::vec3 max;
 } AABB;
+

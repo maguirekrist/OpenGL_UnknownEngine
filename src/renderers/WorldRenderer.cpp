@@ -2,18 +2,18 @@
 // Created by magui on 9/14/2022.
 //
 
-#include "QuadRenderer.h"
+#include "WorldRenderer.h"
 
-QuadRenderer::QuadRenderer(Shader& shader) {
+WorldRenderer::WorldRenderer(Shader& shader) {
     this->shader = shader;
     this->initRenderData();
 }
 
-QuadRenderer::~QuadRenderer() {
+WorldRenderer::~WorldRenderer() {
     glDeleteVertexArrays(1, &this->quadVAO);
 }
 
-void QuadRenderer::initRenderData() {
+void WorldRenderer::initRenderData() {
     unsigned int VBO;
 
     float vertices[] = {
@@ -44,7 +44,7 @@ void QuadRenderer::initRenderData() {
     glBindVertexArray(0);
 }
 
-void QuadRenderer::drawWorld(const World& world, const Camera& camera, DebugView& debugView) {
+void WorldRenderer::drawWorld(const World& world, const Camera& camera, DebugView& debugView) {
     this->shader.use();
 
 
@@ -77,7 +77,7 @@ void QuadRenderer::drawWorld(const World& world, const Camera& camera, DebugView
     //glDisable(GL_BLEND);
 }
 
-void QuadRenderer::drawQuad(const Texture& texture, const Camera& camera) {
+void WorldRenderer::drawQuad(const Texture& texture, const Camera& camera) {
     this->shader.use();
     this->shader.setInt("aTexture", 0);
 //    this->shader.setMat4("view", camera.view);

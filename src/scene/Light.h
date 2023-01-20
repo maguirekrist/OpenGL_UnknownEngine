@@ -9,6 +9,5 @@ struct Light
     float strength;
     int radius;
 	glm::ivec2 position;
-
 };
 

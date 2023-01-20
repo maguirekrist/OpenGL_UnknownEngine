@@ -2,9 +2,7 @@
 // Created by magui on 9/14/2022.
 //
 
-#ifndef ALPHAENGINECMAKE_QUADRENDERER_H
-#define ALPHAENGINECMAKE_QUADRENDERER_H
-
+#pragma once
 
 #include "../graphics/Shader.h"
 #include "../graphics/Texture.h"
@@ -13,10 +11,10 @@
 #include "../scene/Window.h"
 
 
-class QuadRenderer {
+class WorldRenderer {
 public:
-    QuadRenderer(Shader& shader);
-    ~QuadRenderer();
+    WorldRenderer(Shader& shader);
+    ~WorldRenderer();
 
     unsigned int quadVAO;
     Shader shader;
@@ -28,4 +26,4 @@ public:
 };
 
 
-#endif //ALPHAENGINECMAKE_QUADRENDERER_H
+

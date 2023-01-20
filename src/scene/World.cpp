@@ -77,7 +77,7 @@ void World::generate() {
 
             TileType tileType = compute_tile_type(tileHeight);
 
-            tiles.emplace_back(Tile(tileOffsetMap[tileType].second, glm::tvec3<int>(position.x, position.y, tileHeight),  tileSize, tileSize, tileType));
+            tiles.emplace_back(Tile(glm::tvec3<int>(position.x, position.y, tileHeight),  tileSize, tileSize, tileType));
         }
     }
 
@@ -91,20 +91,13 @@ void World::generateWorldTexture() {
     tileData.reserve((this->width * this->height) * 4);
 
     for(auto iter : this->tiles){
-
-//        if(iter.type == TileType::Wall)
-//        {
-//            std::cout << "there is a wall" << std::endl;
-//            //ComputeTileBitmask(this, iter);
-//        }
-
         tileData.push_back(iter.position.x);
         tileData.push_back(iter.position.y);
 
         //TODO: Determine offset now based on bitmap (however, this may not be done this way, we may use linear transitions in the shader for every tile)
 
         tileData.push_back(std::clamp((iter.position.z / 16.0f) * 255, 0.0f, 255.0f));
-        tileData.push_back(iter.offset); //
+        tileData.push_back((int)iter.type); //
     }
 
     Texture text;
@@ -221,5 +214,9 @@ void World::addLight(Light light) {
 
 void World::placeTile(Tile tile) {
     tiles[height * tile.position.y + tile.position.x] = tile;
-    generateWorldTexture();
+
+    //take this chunk and update the texture
+    tileMap.data[((height * tile.position.y + tile.position.x) * 4)+3] = (int)tile.type;
+    tileMap.generate(height, width, tileMap.data.data());
+    
 }

@@ -3,12 +3,8 @@ project(AlphaEngineCMake)
 
 set(CMAKE_CXX_STANDARD 20)
 
-find_package(OpenGL REQUIRED)
-find_package(GLEW REQUIRED)
-find_package(glm CONFIG REQUIRED)
-find_package(glfw3 CONFIG REQUIRED)
-find_package(freetype CONFIG REQUIRED)
-find_path(STB_INCLUDE_DIRS "stb_c_lexer.h")
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
 
 #option(TRACY_ENABLE "" ON)
 #option(TRACY_ON_DEMAND "" ON)
@@ -42,7 +38,8 @@ find_path(STB_INCLUDE_DIRS "stb_c_lexer.h")
 set(source_files
         src/main.cpp
         src/renderers/FontRenderer.cpp
-        src/renderers/QuadRenderer.cpp
+        src/renderers/EntityRenderer.cpp
+        src/renderers/WorldRenderer.cpp
         src/generation/INoiseGenerator.cpp
         src/generation/NoiseGenerator.cpp
         src/graphics/ArrayTexture.cpp
@@ -59,7 +56,8 @@ set(source_files
 
 set(header_files
         src/renderers/FontRenderer.h
-        src/renderers/QuadRenderer.h
+        src/renderers/EntityRenderer.h
+        src/renderers/WorldRenderer.h
         src/generation/INoiseGenerator.h
         src/generation/NoiseGenerator.h
         src/scene/Window.h
@@ -78,18 +76,6 @@ set(header_files
         src/utils/Timer.h)
 
 add_executable(${PROJECT_NAME} ${source_files} ${header_files})
-target_include_directories(${PROJECT_NAME} PRIVATE ${STB_INCLUDE_DIRS})
 
-
-
-if(MSVC)
-    SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/PROFILE")
-    option(TRACEDESIGNTIME "" ON)
-endif()
-
-#target_link_libraries(AlphaEngineCMake PUBLIC Tracy::TracyClient)
-target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)
-target_link_libraries(${PROJECT_NAME} PRIVATE glm::glm)
-target_link_libraries(${PROJECT_NAME} PRIVATE GLEW::GLEW)
-target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
-target_link_libraries(${PROJECT_NAME} PRIVATE freetype)
+#target_link_libraries(AlphaEngineCMake PRIVATE OpenGL::GL)
+target_link_libraries(AlphaEngineCMake ${CONAN_LIBS})

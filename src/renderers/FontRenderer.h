@@ -6,9 +6,9 @@
 #define WORLD_CPP_FONTRENDERER_H
 
 #include <ft2build.h>
+#include FT_FREETYPE_H
 #include <glm/ext/vector_int2.hpp>
 #include <map>
-#include FT_FREETYPE_H
 #include "../graphics/Shader.h"
 #include "../scene/Camera.h"
 

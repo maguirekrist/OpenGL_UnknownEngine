@@ -1,5 +1,5 @@
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+#include "../../includes/stb/stb_image.h"
 #include "ResourceManager.h"
 
 std::map<std::string, Texture>    ResourceManager::textures;

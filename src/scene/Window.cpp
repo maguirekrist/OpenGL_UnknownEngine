@@ -65,38 +65,16 @@ bool Window::isOpen()
     return !glfwWindowShouldClose(glfwWindow);
 }
 
+void Window::setPlaceCommand(std::unique_ptr<Command>&& command)
+{
+    clickCommand = std::move(command);
+}
+
 void Window::update()
 {
     glfwSwapBuffers(glfwWindow);
     glfwPollEvents();
 }
-
-//Cube* Window::Raycast(glm::vec3 ray) {
-//    Cube* hitCube = nullptr;
-//
-//    for (auto& cube : *cubes) {
-//        float t1 = (cube.bounds.min.x - camera.cameraPos.x) / ray.x;
-//        float t2 = (cube.bounds.max.x - camera.cameraPos.x) / ray.x;
-//
-//        float t3 = (cube.bounds.min.y - camera.cameraPos.y) / ray.y;
-//        float t4 = (cube.bounds.max.y - camera.cameraPos.y) / ray.y;
-//
-//        float t5 = (cube.bounds.min.z - camera.cameraPos.z) / ray.z;
-//        float t6 = (cube.bounds.max.z - camera.cameraPos.z) / ray.z;
-//
-//        float tmin = std::max(std::max(std::min(t1, t2), std::min(t3, t4)), std::min(t5, t6));
-//        float tmax = std::min(std::min(std::max(t1, t2), std::max(t3, t4)), std::max(t5, t6));
-//
-//        if (!(tmax < 0) && !(tmin > tmax)) {
-//            cube.color = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
-//            std::cout << "Cube hit with" << cube.color.r << std::endl;
-//            hitCube = &cube;
-//            break;
-//        }
-//    }
-//
-//    return hitCube;
-//}
 
 void Window::processInput()
 {
@@ -149,7 +127,7 @@ void Window::mouse_button_callback(GLFWwindow* p_window, int button, int action,
 
         std::cout << "MouseClick: " << mouseClickPos.x << " & " << mouseClickPos.y << std::endl;
 
-        window->events[0](mouseClickPos, false);
+        window->clickCommand->execute(mouseClickPos);
         //RayCast
         //Cube* result = window->Raycast(dir);
     }
