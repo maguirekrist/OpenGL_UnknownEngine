@@ -77,7 +77,7 @@ void World::generate() {
 
             TileType tileType = compute_tile_type(tileHeight);
 
-            tiles.emplace_back(Tile(glm::tvec3<int>(position.x, position.y, tileHeight),  tileSize, tileSize, tileType));
+            tiles.emplace_back(Tile(glm::tvec3<int>(position.x, position.y, tileHeight), tileType));
         }
     }
 

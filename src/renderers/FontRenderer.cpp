@@ -35,7 +35,8 @@ void FontRenderer::initRenderData() {
 void FontRenderer::loadFont(const char* fontPath) {
     if(FT_New_Face(ft, fontPath, 0, &face))
     {
-        std::cout << "ERROR::FREETYPE: Failed to load font!" << std::endl;
+        std::cout << "ERROR::FREETYPE: Failed to load font! location: " << fontPath  << std::endl;
+        throw std::runtime_error("Invalid Path.");
     }
 
     FT_Set_Pixel_Sizes(face, 0, 48);

@@ -6,10 +6,10 @@
 #define WORLD_CPP_TILETYPE_H
 
 enum class TileType : std::uint8_t {
+    Water = 0,
     Terrain = 1,
-    Water = 2,
+    Mountain = 2,
     WaterShallow = 3,
-    Mountain = 3,
     Wall = 4
 };
 

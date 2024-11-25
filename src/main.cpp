@@ -10,6 +10,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include <memory>
+#include <format>
 #include "scene/Camera.h"
 #include "graphics/Shader.h"
 #include "scene/Window.h"
@@ -46,6 +47,13 @@ static Texture get_height_map_texture(std::vector<int>& map)
     return text;
 }
 
+static std::optional<Tile> get_selected_tile(const Camera& camera, const World& world) {
+    if (camera.cursorPos.x >= 0 && camera.cursorPos.x < world.width && camera.cursorPos.y >= 0 && camera.cursorPos.y < world.height)
+        return world.tiles[(world.width * camera.cursorPos.y) + camera.cursorPos.x];
+    else
+        return std::nullopt;
+}
+
 
 int main(int argc, const char * argv[]) {
     Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -70,7 +78,7 @@ int main(int argc, const char * argv[]) {
     FontRenderer* fontRenderer = new FontRenderer(ResourceManager::getShader("font"));
     WorldRenderer* worldRenderer = new WorldRenderer(ResourceManager::getShader("world"));
     EntityRenderer* entityRenderer = new EntityRenderer(ResourceManager::getShader("sprite"));
-
+    
     fontRenderer->loadFont("../resources/fonts/arial.ttf");
 
     World world(512, 512,
@@ -78,8 +86,8 @@ int main(int argc, const char * argv[]) {
                 ResourceManager::getTexture("ambient"),
                 std::make_unique<NoiseGenerator>());
 
-    world.addLight(Light(glm::ivec2(32, 32), 1.0f, 12));
-    world.addLight(Light(glm::ivec2(64, 64), 1.0f, 12));
+    //world.addLight(Light(glm::ivec2(32, 32), 1.0f, 12));
+    //world.addLight(Light(glm::ivec2(64, 64), 1.0f, 12));
 
     Texture testText = get_height_map_texture(world.heightMap);
 
@@ -97,6 +105,7 @@ int main(int argc, const char * argv[]) {
     double timeAccel = 8;
 
     Timer timer;
+
 
     while(window.isOpen())
     {
@@ -122,9 +131,12 @@ int main(int argc, const char * argv[]) {
         if(window.debugView != DebugView::HeightMapTexture)
             worldRenderer->drawWorld(world, camera, window.debugView);
 
+
+
         std::ostringstream strs;
         strs << world.worldTime;
-        fontRenderer->renderText(strs.str(), camera, glm::vec2(0.0f, 0.0f), 1.0f, glm::vec3(0.5f, 0.8f, 0.2f));
+        std::optional<Tile> tileOpt = get_selected_tile(camera, world);
+        fontRenderer->renderText(std::format("{}", tileOpt.has_value() ? (int)tileOpt.value().position.z : 0), camera, glm::vec2(0.0f, 0.0f), 1.0f, glm::vec3(0.5f, 0.8f, 0.2f));
         window.update();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

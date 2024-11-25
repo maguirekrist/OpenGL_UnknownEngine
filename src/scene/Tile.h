@@ -12,17 +12,14 @@
 
 class Tile {
 public:
-    int width, height;
     TileType type;
 
     std::uint8_t bitmask = 0;
 
     glm::tvec3<int> position; //x, y, then z representing tile height in the heightMap
 
-    Tile(glm::tvec3<int> position, int width, int height, TileType type) :
+    Tile(glm::tvec3<int> position, TileType type) :
         position(position),
-        width(width),
-        height(height),
         type(type)
         {}
 

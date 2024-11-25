@@ -3,17 +3,19 @@
 //
 
 #include <random>
+#include <ranges>
+#include <algorithm>
 #include <iostream>
 #include "NoiseGenerator.h"
 #include "../utils/Random.h"
 
 //Precondition: Chunk size should be a area value
 static void ds_generate(std::vector<int>& map, int count) {
-    float magnitude_multiplier = std::pow(2, -(0.5 * count));
+    float magnitude_multiplier = std::pow(2, -(0.55 * count));
 
     std::random_device dev;
     std::mt19937 rng(dev());
-    std::uniform_int_distribution<int> dist6(-7 * magnitude_multiplier,7 * magnitude_multiplier);
+    std::uniform_int_distribution<int> dist6(-10 * magnitude_multiplier,10 * magnitude_multiplier);
 
     int mapSize = std::sqrt(map.size());
     int iterations = std::pow(4, count);
@@ -100,13 +102,51 @@ static void ds_generate(std::vector<int>& map, int count) {
     ds_generate(map, ++count);
 }
 
+static void median_filter(std::vector<int>& map, int kernel_size)
+{
+    int mapSize = std::sqrt(map.size());
+    if (kernel_size >= mapSize) return;
+
+    int edge = (kernel_size / 2);
+
+    auto get_ordered_list = [&](int x, int y) -> std::vector<int> {
+        std::vector<int> pixels;
+
+        for (int i = 0; i < kernel_size; i++) {
+            for (int j = 0; j < kernel_size; j++) {
+                pixels.push_back(map[(mapSize * (y+i-edge)) + (x+j-edge)]);
+            }
+        }
+
+        std::ranges::sort(pixels);
+
+        return pixels;
+    };
+
+    //start at kernel_size to avoid border issue with kernel filter
+    for (int i = edge; i < (mapSize - edge); i++) {
+        for (int j = edge; j < (mapSize - edge); j++) {
+            //construct an ordered list of the pixels in the kernel window
+            auto olist = get_ordered_list(j, i);
+            map[(mapSize * i) + j] = olist[olist.size() / 2]; //set the pixel to the media value
+        }
+    }
+
+}
+
+
 std::vector<int> NoiseGenerator::generate(int dim) {
     std::vector<int> heightMap(dim * dim, -999);
+
+    std::random_device dev;
+    std::mt19937 rng(dev());
+    std::uniform_int_distribution<int> dist6(0, 22);
+
     //Step 1, initialize the corners
-    auto topLeft = Random::generate(1, 10);
-    auto topRight = Random::generate(1, 10);
-    auto bottomLeft = Random::generate(1, 10);
-    auto bottomRight = Random::generate(1, 10);
+    auto topLeft = dist6(rng);
+    auto topRight = dist6(rng);
+    auto bottomLeft = dist6(rng);
+    auto bottomRight = dist6(rng);
 
 
     heightMap[(0 * dim) + 0] = bottomLeft; //bottomLeft
@@ -116,6 +156,7 @@ std::vector<int> NoiseGenerator::generate(int dim) {
     heightMap[((dim-1) * dim) + 0] = topLeft; //topLeft
 
     ds_generate(heightMap, 0);
+    median_filter(heightMap, 3);
     //heightMap[22] = 255;
 
 
